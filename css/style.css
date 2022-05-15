@@ -1,0 +1,156 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #272727;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 16px;
+}
+
+hr {
+  margin: 24px 0;
+}
+
+h2 {
+  margin: 16px 0;
+}
+
+button {
+  cursor: pointer;
+  color: #fff;
+  border: 1px solid #fff;
+  background-color:#444;
+  padding: 16px;
+  font-size: 24px;
+  margin: 8px;
+}
+
+button:hover {
+  box-shadow: 0 5px 9px #000;
+  transform: translateY(-5px);
+}
+
+button:active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+button:disabled {
+  cursor: initial;
+  pointer-events: none;
+  background-color: #aaa;
+  color: #888;
+  border: 1px solid #888;
+}
+
+button:disabled > img {
+  opacity: .3;
+}
+
+.root {
+  display: flex;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+}
+
+.controls .controlButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  min-width: 300px;
+}
+
+.controls .controlButton > span {
+  margin-left: 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.editControls {
+  text-align: center;
+}
+
+.gridContainer {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  flex-direction: column;
+}
+
+.floorSelectContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 300px;
+  margin-bottom: 24px;
+}
+
+.floorSelectContainer .floorSelectButton {
+  margin: 8px 16px;
+  padding: 8px 16px;
+}
+
+.gridTable {
+  border-collapse: collapse;
+  user-select: none;
+  border: 1px solid #000;
+  max-width: max-content;
+}
+
+.tile {
+  box-sizing: content-box;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border: 1px solid #000;
+  cursor: pointer;
+}
+
+.tile:hover {
+  border: 1px solid #0F0;
+}
+
+.tile > img {
+  pointer-events: none;
+}
+
+.tile.--fixed {
+  border: 1px solid #f00;
+  pointer-events: none;
+}
+
+.tile.--rotate0 {
+  transform: rotate(0deg);
+}
+.tile.--rotate90 {
+  transform: rotate(90deg);
+}
+.tile.--rotate180 {
+  transform: rotate(180deg);
+}
+.tile.--rotate270 {
+  transform: rotate(270deg);
+}
+
+.tilePreviewContainer {
+  text-align: center;
+  margin: 24px;
+}
+
+.tilePreviewContainer .tilePreview {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}

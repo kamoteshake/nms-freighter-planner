@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+
+  <script src="https://kit.fontawesome.com/818d47a004.js" crossorigin="anonymous"></script>
+
+  <title>Freighter Planner</title>
+</head>
+<body>
+  <div class="root">
+    <div class="controlContainer">
+      <h2>Rooms</h2>
+      <div class="controls">
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="corridor"><img src="img/corridor.png" /> <span>Corridor</span></button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="curved_corridor"><img src="img/curvedCorridor.png" /> <span>Curved Corridor</span></button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="junction"><img src="img/junction.png" /> <span>Junction</span></button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="cross_junction"><img src="img/crossJunction.png" /> <span>Cross Junction</span></button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="stairs_down"><img src="img/stairsDown.png" /> <span>Stairs (Down)</span></button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="stairs_up"><img src="img/stairsUp.png" /> <span>Stairs (Up)</span></button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="large_room"><img src="img/largeRoom.png" /> <span>Large Room</span></button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="fleet_command"><img src="img/fleetCommand.png" /> <span>Fleet Command</span></button>
+        <button id="storageUnitButton" class="controlButton" onClick="handleRoomButton(this);" data-type="storage_unit"><img src="img/storageUnit.png" /> <span>Storage Unit</span></button>
+      </div>
+
+      <hr />
+
+      <div class="editControls">
+        <button class="editButton" onClick="handleCCWRotate();" title="Rotate Counter Clockwise"><i class="fa-solid fa-arrow-rotate-left"></i></button>
+        <button class="editButton" onCLick="handleCWRotate();" title="Rotate Clockwise"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+        <button class="editButton" onCLick="handleDeleteTile();" title="Delete Tile"><i class="fa-solid fa-eraser"></i></button>
+        <button class="editButton" onCLick="handleSaveFloor();" title="Save Floor"><i class="fa-solid fa-floppy-disk"></i></button>
+      </div>
+
+      <div class="tilePreviewContainer">
+        <h4>Selected Tile</h4>
+        <div id="tilePreview" class="tilePreview"></div>
+      </div>
+    </div>
+  
+    <div id="gridContainer" class="gridContainer">
+      <div class="floorSelectContainer">
+        <button id="previousFloorButton" class="floorSelectButton" onClick="handlePreviousFloor();"><i class="fa-solid fa-caret-left"></i></button>
+        <h2 id="floorLabel"></h2>
+        <button id="nextFloorButton" class="floorSelectButton" onClick="handleNextFloor();"><i class="fa-solid fa-caret-right"></i></button>
+      </div>
+      <table id="gridTable" class="gridTable"></table>
+    </div>
+  </div>
+
+  <script src="js/const.js"></script>
+  <script src="js/tile.js"></script>
+  <script src="js/setup.js"></script>
+  <script src="js/defaultFreighter.js"></script>
+</body>
+</html>
