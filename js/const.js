@@ -5,6 +5,7 @@ const EMPTY = 'empty';
 const FLEET_COMMAND = 'fleet_command';
 const JUNCTION = 'junction';
 const LARGE_ROOM = 'large_room';
+const ORBITAL_EXOCRAFT_MATERIALISER = 'orbital_exocraft_materialiser';
 const STAIRS_DOWN = 'stairs_down';
 const STAIRS_UP = 'stairs_up';
 const STORAGE_UNIT = 'storage_unit';
@@ -16,6 +17,7 @@ const typeImages = Object.freeze({
   [FLEET_COMMAND]: 'img/fleetCommand.png',
   [JUNCTION]: 'img/junction.png',
   [LARGE_ROOM]: 'img/largeRoom.png',
+  [ORBITAL_EXOCRAFT_MATERIALISER]: 'img/orbitalExocraftMaterialiser.png',
   [STAIRS_DOWN]: 'img/stairsDown.png',
   [STAIRS_UP]: 'img/stairsUp.png',
   [STORAGE_UNIT]: 'img/storageUnit.png'
