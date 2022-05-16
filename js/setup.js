@@ -3,11 +3,11 @@ const maxRow = 21;
 const maxColumn = 21;
 const maxFloor = 14;
 const maxStorageUnit = 10;
-const maxOrbitalExocraftMaterialiser = 1;
+const maxOrbitalExocraftMaterializer = 1;
 
 let grid = [];
 let storageUnitCount = parseInt(localStorage.getItem('sotrageUnitCount') ?? 0)
-let orbitalExocraftMaterialiserCount = parseInt(localStorage.getItem('orbitalExocraftMaterialiserCount') ?? 0);
+let orbitalExocraftMaterializerCount = parseInt(localStorage.getItem('orbitalExocraftMaterializerCount') ?? 0);
 let currentFloor = parseInt(localStorage.getItem('currentFloor') ?? 0);
 let currentType = EMPTY;
 let currentRotation = 0;
@@ -104,22 +104,22 @@ const handleTableClick = e => {
       updateStorageUnitButton();
     }
 
-    // add orbital exocraft materialiser count
-    if (currentType === ORBITAL_EXOCRAFT_MATERIALISER) {
-      if (orbitalExocraftMaterialiserCount === maxOrbitalExocraftMaterialiser) return;
+    // add orbital exocraft materializer count
+    if (currentType === ORBITAL_EXOCRAFT_MATERIALIzER) {
+      if (orbitalExocraftMaterializerCount === maxOrbitalExocraftMaterializer) return;
 
-      orbitalExocraftMaterialiserCount += 1;
-      localStorage.setItem('orbitalExocraftMaterialiserCount', storageUnitCount);
+      orbitalExocraftMaterializerCount += 1;
+      localStorage.setItem('orbitalExocraftMaterializerCount', storageUnitCount);
       
-      updateOrbitalExocraftMaterialiserButton();
+      updateOrbitalExocraftMaterializerButton();
     }
 
     // subtract storage unit count when removing storage unit room
-    if (tile.type === ORBITAL_EXOCRAFT_MATERIALISER && currentType !== ORBITAL_EXOCRAFT_MATERIALISER) {
-      orbitalExocraftMaterialiserCount -= 1;
-      localStorage.setItem('orbitalExocraftMaterialiserCount', storageUnitCount);
+    if (tile.type === ORBITAL_EXOCRAFT_MATERIALIzER && currentType !== ORBITAL_EXOCRAFT_MATERIALIzER) {
+      orbitalExocraftMaterializerCount -= 1;
+      localStorage.setItem('orbitalExocraftMaterializerCount', storageUnitCount);
 
-      updateOrbitalExocraftMaterialiserButton();
+      updateOrbitalExocraftMaterializerButton();
     }
 
     tile.updateTile(currentType, currentRotation);
@@ -205,17 +205,17 @@ const updateStorageUnitButton = () => {
   storageUnitButton.getElementsByTagName('span')[0].innerText = `Storage Unit (${maxStorageUnit - storageUnitCount})`;
 };
 
-const updateOrbitalExocraftMaterialiserButton = () => {
-  const orbitalExocraftMaterialiserButton = document.getElementById('orbitalExocraftMaterialiserButton');
+const updateOrbitalExocraftMaterializerButton = () => {
+  const orbitalExocraftMaterializerButton = document.getElementById('orbitalExocraftMaterializerButton');
 
-  if (orbitalExocraftMaterialiserCount === maxOrbitalExocraftMaterialiser && !orbitalExocraftMaterialiserButton.disabled) {
-    orbitalExocraftMaterialiserButton.disabled = true;
+  if (orbitalExocraftMaterializerCount === maxOrbitalExocraftMaterializer && !orbitalExocraftMaterializerButton.disabled) {
+    orbitalExocraftMaterializerButton.disabled = true;
   }
-  if (orbitalExocraftMaterialiserCount !== maxOrbitalExocraftMaterialiser && orbitalExocraftMaterialiserButton.disabled) {
-    orbitalExocraftMaterialiserButton.disabled = false;
+  if (orbitalExocraftMaterializerCount !== maxOrbitalExocraftMaterializer && orbitalExocraftMaterializerButton.disabled) {
+    orbitalExocraftMaterializerButton.disabled = false;
   }
 
-  orbitalExocraftMaterialiserButton.getElementsByTagName('span')[0].innerText = `Orbital Exocraft Materialiser (${maxOrbitalExocraftMaterialiser - orbitalExocraftMaterialiserCount})`;
+  orbitalExocraftMaterializerButton.getElementsByTagName('span')[0].innerText = `Orbital Exocraft Materializer (${maxOrbitalExocraftMaterializer - orbitalExocraftMaterializerCount})`;
 };
 
 const updateTilePreview = () => {
@@ -260,7 +260,7 @@ const initiate = () => {
 
   renderContent();
   updateStorageUnitButton();
-  updateOrbitalExocraftMaterialiserButton();
+  updateOrbitalExocraftMaterializerButton();
 };
 
 document.addEventListener('DOMContentLoaded', initiate);
