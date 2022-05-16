@@ -3,9 +3,11 @@ const maxRow = 21;
 const maxColumn = 21;
 const maxFloor = 14;
 const maxStorageUnit = 10;
+const maxOrbitalExocraftMaterializer = 1;
 
 let grid = [];
 let storageUnitCount = parseInt(localStorage.getItem('sotrageUnitCount') ?? 0)
+let orbitalExocraftMaterializerCount = parseInt(localStorage.getItem('orbitalExocraftMaterializerCount') ?? 0);
 let currentFloor = parseInt(localStorage.getItem('currentFloor') ?? 0);
 let currentType = EMPTY;
 let currentRotation = 0;
@@ -102,6 +104,24 @@ const handleTableClick = e => {
       updateStorageUnitButton();
     }
 
+    // add orbital exocraft materializer count
+    if (currentType === ORBITAL_EXOCRAFT_MATERIALIZER) {
+      if (orbitalExocraftMaterializerCount === maxOrbitalExocraftMaterializer) return;
+
+      orbitalExocraftMaterializerCount += 1;
+      localStorage.setItem('orbitalExocraftMaterializerCount', storageUnitCount);
+      
+      updateOrbitalExocraftMaterializerButton();
+    }
+
+    // subtract storage unit count when removing storage unit room
+    if (tile.type === ORBITAL_EXOCRAFT_MATERIALIZER && currentType !== ORBITAL_EXOCRAFT_MATERIALIZER) {
+      orbitalExocraftMaterializerCount -= 1;
+      localStorage.setItem('orbitalExocraftMaterializerCount', storageUnitCount);
+
+      updateOrbitalExocraftMaterializerButton();
+    }
+
     tile.updateTile(currentType, currentRotation);
   }
 };
@@ -185,6 +205,19 @@ const updateStorageUnitButton = () => {
   storageUnitButton.getElementsByTagName('span')[0].innerText = `Storage Unit (${maxStorageUnit - storageUnitCount})`;
 };
 
+const updateOrbitalExocraftMaterializerButton = () => {
+  const orbitalExocraftMaterializerButton = document.getElementById('orbitalExocraftMaterializerButton');
+
+  if (orbitalExocraftMaterializerCount === maxOrbitalExocraftMaterializer && !orbitalExocraftMaterializerButton.disabled) {
+    orbitalExocraftMaterializerButton.disabled = true;
+  }
+  if (orbitalExocraftMaterializerCount !== maxOrbitalExocraftMaterializer && orbitalExocraftMaterializerButton.disabled) {
+    orbitalExocraftMaterializerButton.disabled = false;
+  }
+
+  orbitalExocraftMaterializerButton.getElementsByTagName('span')[0].innerText = `Orbital Exocraft Materializer (${maxOrbitalExocraftMaterializer - orbitalExocraftMaterializerCount})`;
+};
+
 const updateTilePreview = () => {
   tilePreview.updateTile(currentType, currentRotation);
 };
@@ -227,6 +260,7 @@ const initiate = () => {
 
   renderContent();
   updateStorageUnitButton();
+  updateOrbitalExocraftMaterializerButton();
 };
 
 document.addEventListener('DOMContentLoaded', initiate);
