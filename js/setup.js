@@ -6,7 +6,7 @@ const maxStorageUnit = 10;
 const maxOrbitalExocraftMaterializer = 1;
 
 let grid = [];
-let storageUnitCount = parseInt(localStorage.getItem('sotrageUnitCount') ?? 0)
+let storageUnitCount = parseInt(localStorage.getItem('storageUnitCount') ?? 0)
 let orbitalExocraftMaterializerCount = parseInt(localStorage.getItem('orbitalExocraftMaterializerCount') ?? 0);
 let currentFloor = parseInt(localStorage.getItem('currentFloor') ?? 0);
 let currentType = EMPTY;
@@ -91,7 +91,7 @@ const handleTableClick = e => {
       if (storageUnitCount === maxStorageUnit) return;
 
       storageUnitCount += 1;
-      localStorage.setItem('sotrageUnitCount', storageUnitCount);
+      localStorage.setItem('storageUnitCount', storageUnitCount);
       
       updateStorageUnitButton();
     }
@@ -99,7 +99,7 @@ const handleTableClick = e => {
     // subtract storage unit count when removing storage unit room
     if (tile.type === STORAGE_UNIT && currentType !== STORAGE_UNIT) {
       storageUnitCount -= 1;
-      localStorage.setItem('sotrageUnitCount', storageUnitCount);
+      localStorage.setItem('storageUnitCount', storageUnitCount);
 
       updateStorageUnitButton();
     }
@@ -109,7 +109,7 @@ const handleTableClick = e => {
       if (orbitalExocraftMaterializerCount === maxOrbitalExocraftMaterializer) return;
 
       orbitalExocraftMaterializerCount += 1;
-      localStorage.setItem('orbitalExocraftMaterializerCount', storageUnitCount);
+      localStorage.setItem('orbitalExocraftMaterializerCount', orbitalExocraftMaterializerCount);
       
       updateOrbitalExocraftMaterializerButton();
     }
@@ -117,7 +117,7 @@ const handleTableClick = e => {
     // subtract storage unit count when removing storage unit room
     if (tile.type === ORBITAL_EXOCRAFT_MATERIALIZER && currentType !== ORBITAL_EXOCRAFT_MATERIALIZER) {
       orbitalExocraftMaterializerCount -= 1;
-      localStorage.setItem('orbitalExocraftMaterializerCount', storageUnitCount);
+      localStorage.setItem('orbitalExocraftMaterializerCount', orbitalExocraftMaterializerCount);
 
       updateOrbitalExocraftMaterializerButton();
     }
