@@ -59,6 +59,7 @@ button:disabled > img {
   display: flex;
   flex-wrap: nowrap;
   flex-direction: column;
+  overflow: auto;
 }
 
 .controls .controlButton {
