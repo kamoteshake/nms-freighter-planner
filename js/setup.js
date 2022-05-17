@@ -109,7 +109,7 @@ const handleTableClick = e => {
       if (orbitalExocraftMaterializerCount === maxOrbitalExocraftMaterializer) return;
 
       orbitalExocraftMaterializerCount += 1;
-      localStorage.setItem('orbitalExocraftMaterializerCount', storageUnitCount);
+      localStorage.setItem('orbitalExocraftMaterializerCount', orbitalExocraftMaterializerCount);
       
       updateOrbitalExocraftMaterializerButton();
     }
@@ -117,7 +117,7 @@ const handleTableClick = e => {
     // subtract storage unit count when removing storage unit room
     if (tile.type === ORBITAL_EXOCRAFT_MATERIALIZER && currentType !== ORBITAL_EXOCRAFT_MATERIALIZER) {
       orbitalExocraftMaterializerCount -= 1;
-      localStorage.setItem('orbitalExocraftMaterializerCount', storageUnitCount);
+      localStorage.setItem('orbitalExocraftMaterializerCount', orbitalExocraftMaterializerCount);
 
       updateOrbitalExocraftMaterializerButton();
     }
