@@ -1,9 +1,11 @@
 class Tile {
-  constructor(x, y, rotation, isFixed) {
+  constructor(x, y, rotation, type, isFixed) {
     this.x = x ?? 0;
     this.y = y ?? 0;
     this.rotation = rotation ?? 0;
     this.isFixed = isFixed ?? false;
+    this.type = type ?? EMPTY;
+    this.img = typeImages[type];
     this.hovered = false;
   }
 
@@ -15,33 +17,38 @@ class Tile {
     this.hovered = false;
   }
 
-  rotateCW() {
-    const newRotation = this.rotation + 90;
-
-    if(newRotation >= 360) {
-      this.rotation = 0;
-    } else {
-      this.rotation = newRotation;
-    }
+  updateRotation(rotation) {
+    this.rotation = rotation;
   }
 
-  rotateCCW() {
-    const newRotation = this.rotation - 90;
-
-    if(newRotation < 0) {
-      this.rotation = 270;
-    } else {
-      this.rotation = newRotation;
-    }
+  updateTile(type, rotation, isFixed) {
+    this.type = type;
+    this.img = typeImages[type];
+    this.rotation = rotation;
+    this.isFixed = isFixed;
   }
 
-  render() {
+  draw() {
     const ctx = document.getElementById('canvas').getContext('2d');
+    const img = new Image();
+    img.onload = () => {
+      ctx.rotate((Math.PI / 180) * this.rotation);
+      ctx.drawImage(img, this.x * TILE_SIZE, this.y * TILE_SIZE);
 
-    if (this.hovered) {
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = '#0F0';
-      ctx.strokeRect(this.x * TILE_SIZE + 1, this.y * TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
-    }
+      // add a green border when hovered and it's not a fixed tile
+      if (this.hovered && !this.isFixed) {
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#0F0';
+        ctx.strokeRect(this.x * TILE_SIZE + 1, this.y * TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
+      }
+
+      //add red border if it is a fixed tiled
+      if(this.isFixed) {
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#F00';
+        ctx.strokeRect(this.x * TILE_SIZE + 1, this.y * TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
+      }
+    };
+    img.src = this.img;
   }
 }
