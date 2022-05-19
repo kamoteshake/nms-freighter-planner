@@ -1,11 +1,18 @@
 class Tile {
-  constructor(x, y, type, rotation, isFixed) {
+  constructor(x, y, rotation, isFixed) {
     this.x = x ?? 0;
     this.y = y ?? 0;
     this.rotation = rotation ?? 0;
-    this.type = type ?? EMPTY;
     this.isFixed = isFixed ?? false;
-    this.element = document.createElement('div');
+    this.hovered = false;
+  }
+
+  mouseEnter() {
+    this.hovered = true;
+  }
+
+  mouseExit() {
+    this.hovered = false;
   }
 
   rotateCW() {
@@ -16,8 +23,6 @@ class Tile {
     } else {
       this.rotation = newRotation;
     }
-
-    this.updateRotation();
   }
 
   rotateCCW() {
@@ -28,70 +33,15 @@ class Tile {
     } else {
       this.rotation = newRotation;
     }
-
-    this.updateRotation();
   }
 
-  updateRotation () {
-    const rotateClass = this.element.className.split(' ').find(c => c.startsWith('--rotate'));
+  render() {
+    const ctx = document.getElementById('canvas').getContext('2d');
 
-    this.element.classList.remove(rotateClass);
-    this.element.classList.add(`--rotate${this.rotation}`);
-  }
-
-  updateTile(type, rotation, isFixed = false) {
-    if (type === this.type && rotation === this.rotation && isFixed === this.isFixed) return;
-
-    // remove previous info
-    this.element.classList.remove(`--fixed`);
-
-    this.type = type;
-    this.isFixed = isFixed;
-
-    // add new info
-    if(this.isFixed) {
-      this.element.classList.add('--fixed');
+    if (this.hovered) {
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#0F0';
+      ctx.strokeRect(this.x * TILE_SIZE + 1, this.y * TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
     }
-
-    if(rotation !== undefined) {
-      this.rotation = rotation;
-      this.updateRotation();
-    }
-
-    this.reDrawType();
-  }
-
-  reDrawType() {
-    // remove any child
-    if (this.element.firstChild) {
-      this.element.removeChild(this.element.firstChild);
-    }
-
-    if(this.type !== EMPTY) {
-      // create new image
-      const imageElement = document.createElement('img');
-      imageElement.src = typeImages[this.type];
-      this.element.appendChild(imageElement);
-    }
-  }
-
-  draw() {
-    this.element.classList.add('tile');
-
-    this.element.setAttribute('data-x', this.x);
-    this.element.setAttribute('data-y', this.y);
-
-    if(this.isFixed) {
-      this.element.classList.add('--fixed');
-    }
-
-    if(this.type !== EMPTY) {
-      const imageElement = document.createElement('img');
-      imageElement.src = typeImages[this.type];
-      this.element.appendChild(imageElement);
-      this.updateRotation();
-    }
-
-    return this.element;
   }
 }
