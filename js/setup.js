@@ -1,11 +1,3 @@
-// config
-const TILE_SIZE = 50;
-const MAX_ROW = 21;
-const MAX_COLUMN = 21;
-const MAX_FLOOR = 14;
-const MAX_STORAGE_UNIT = 10;
-const MAX_ORBITAL_EXOCRAFT_MATERIALIZER = 1;
-
 let grid = make2dArray(MAX_COLUMN, MAX_ROW);
 let storageUnitCount = parseInt(localStorage.getItem('storageUnitCount') ?? 0)
 let orbitalExocraftMaterializerCount = parseInt(localStorage.getItem('orbitalExocraftMaterializerCount') ?? 0);
@@ -22,7 +14,7 @@ const handleRoomButton = e => {
   // reset the rotation when choosing a new floor type
   currentRotation = 0
 
-  updateTilePreview();
+  // updateTilePreview();
 };
 
 const handleCWRotate = () => {
@@ -34,7 +26,7 @@ const handleCWRotate = () => {
     currentRotation = newRotation;
   }
 
-  updateTilePreview();
+  // updateTilePreview();
 };
 
 const handleCCWRotate = () => {
@@ -46,14 +38,14 @@ const handleCCWRotate = () => {
     currentRotation = newRotation;
   }
 
-  updateTilePreview();
+  // updateTilePreview();
 };
 
 const handleDeleteTile = () => {
   currentType = EMPTY;
   currentRotation = 0;
 
-  updateTilePreview();
+  // updateTilePreview();
 };
 
 const handleSaveFloor = () => {
@@ -127,47 +119,6 @@ const handleTableClick = e => {
   }
 };
 
-const populateTableGrid = () => {
-  // get saved grid
-  const serializedGrid = JSON.parse(localStorage.getItem(`floor_${currentFloor}`) ?? '[]')
-    .map(row => row.map(tile => new Tile(tile.x, tile.y, tile.type, tile.rotation, tile.isFixed)));
-
-  grid = serializedGrid;
-
-  // create new empty grid if there are no grid
-  if (!grid.length) {
-    for(let row = 0; row < MAX_ROW; row++) {
-      const rowArray = [];
-  
-      // create column
-      for(let column = 0; column < MAX_COLUMN; column++) {
-        const newTile = new Tile(row, column);
-        rowArray.push(newTile);
-  
-        const tableColumn = document.getElementById(`tile_${row}_${column}`);
-        tableColumn.innerHTML = '';
-        tableColumn.appendChild(newTile.draw());
-      }
-  
-      grid.push(rowArray);
-    }
-  } else {
-    grid.forEach((row, rowIndex) => {
-      row.forEach((tile, tileIndex) => {
-        const tableColumn = document.getElementById(`tile_${rowIndex}_${tileIndex}`);
-        tableColumn.innerHTML = '';
-        tableColumn.appendChild(tile.draw());
-      });
-    });
-  }
-
-  // if it's the first floor and there is no saves for the first floor,
-  // render the default freighter floor
-  if (currentFloor === 0 && !localStorage.getItem('floor_0')) {
-    buildDefaultFreighter(grid);
-  }
-};
-
 const updateFloorLabel = () => {
   const floorLabel = document.getElementById('floorLabel');
   floorLabel.innerText = `Floor ${currentFloor + 1}`;
@@ -231,19 +182,13 @@ const renderContent = () => {
 
 let lastHovered = { x: null, y: null };
 
-const mouseEvent = (e) => {
-  const rect = e.target.getBoundingClientRect();
+const handleMouseMove = e => {
+  const { x, y } = getGridCoorsFromMousePos(e);
 
-  let x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
-  let y = Math.floor((e.clientY - rect.top) / TILE_SIZE);
-
-  if (x < 0) x = 0;
-  if (y < 0) y = 0;
-  if (x >= MAX_COLUMN) x = MAX_COLUMN - 1;
-  if (y >= MAX_ROW) y = MAX_ROW - 1;
-
+  // if the mouse is moving in the same tile, do nothing
   if (lastHovered.x === x && lastHovered.y === y) return;
 
+  // clear the hover state of the previous hovered tile
   if (lastHovered.x !== null && lastHovered.y !== null) {
     const lastHoveredTile = grid[lastHovered.x][lastHovered.y];
     lastHoveredTile.mouseExit();
@@ -251,10 +196,45 @@ const mouseEvent = (e) => {
   }
 
   const hoveredTile = grid[x][y];
+  
+  // if the left button is clicked, 
+  if(e.buttons === 1) {
+    // update the the hovered tile if it does not have the same type or rotation
+    if (hoveredTile.type !== currentType || hoveredTile.rotation !== currentRotation) {
+      hoveredTile.updateTile(currentType, currentRotation);
+    }
+  }
+
+  // update the hover state of the hovered tile
   hoveredTile.mouseEnter();
   hoveredTile.draw();
 
   lastHovered = { x, y };
+};
+
+const handleMouseLeave = () => {
+  // clears the last hovered tile when the mouse is not on the canvas
+  if (lastHovered.x !== null && lastHovered.y !== null) {
+    const lastHoveredTile = grid[lastHovered.x][lastHovered.y];
+    lastHoveredTile.mouseExit();
+    lastHoveredTile.draw();
+  }
+};
+
+const handleMouseDown = e => {
+  const { x, y } = getGridCoorsFromMousePos(e);
+
+  if (e.buttons === 1) {
+    const clickedTile = grid[x][y];
+
+    // if the clicked tile has the same type and rotation, do nothing
+    if (clickedTile.type === currentType && clickedTile.rotation === currentRotation) return;
+
+    console.log(currentRotation);
+
+    clickedTile.updateTile(currentType, currentRotation);
+    clickedTile.draw();
+  }
 };
 
 const initiate = () => {
@@ -263,13 +243,29 @@ const initiate = () => {
   canvas.setAttribute('width', TILE_SIZE * MAX_COLUMN);
   canvas.setAttribute('height', TILE_SIZE * MAX_ROW);
 
-  canvas.addEventListener('mousemove', mouseEvent);
+  canvas.addEventListener('mousedown', handleMouseDown);
+  canvas.addEventListener('mousemove', handleMouseMove);
+  canvas.addEventListener('mouseleave', handleMouseLeave);
 
-  // create empty grid
-  for(let x = 0; x < MAX_COLUMN; x++) {
-    for(let y = 0; y < MAX_ROW; y++) {
-      const newTile = new EmptyRoom(x, y, 0, false);
-      grid[x][y] = newTile;
+  // get saved grid
+  grid = JSON.parse(localStorage.getItem(`floor_${currentFloor}`) ?? '[]')
+    .map(row => row.map(tile => new Tile(tile.x, tile.y, tile.rotation, tile.type, tile.isFixed)));
+
+  // if there are no saved floor
+  if (!grid.length) {
+    // if it's the first floor
+    if (currentFloor === 0) {
+      // build the default freighter layout
+      grid = buildDefaultFreighter();
+    }
+    else {
+      // create empty grid
+      for(let x = 0; x < MAX_COLUMN; x++) {
+        for(let y = 0; y < MAX_ROW; y++) {
+          const newTile = new Tile(x, y, 0, EMPTY, false);
+          grid[x][y] = newTile;
+        }
+      }
     }
   }
 
