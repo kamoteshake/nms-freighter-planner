@@ -19,6 +19,10 @@ h2 {
   margin: 16px 0;
 }
 
+a, a:visited, a:active {
+  color: #fff;
+}
+
 button {
   cursor: pointer;
   color: #fff;
@@ -154,4 +158,8 @@ button:disabled > img {
   display: flex;
   justify-content: center;
   pointer-events: none;
+}
+
+.canvas {
+  border: 1px solid #000;
 }

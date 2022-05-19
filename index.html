@@ -8,6 +8,13 @@
 
   <script src="https://kit.fontawesome.com/818d47a004.js" crossorigin="anonymous"></script>
 
+  <script src="js/const.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/Tile.js"></script>
+  <script src="js/EmptyRoom.js"></script>
+  <script src="js/setup.js"></script>
+  <script src="js/defaultFreighter.js"></script>
+
   <title>Freighter Planner</title>
 </head>
 <body>
@@ -48,12 +55,10 @@
         <button id="nextFloorButton" class="floorSelectButton" onClick="handleNextFloor();"><i class="fa-solid fa-caret-right"></i></button>
       </div>
       <table id="gridTable" class="gridTable"></table>
+      <canvas id="canvas" class="canvas">
+        <p>Please use a browser that supports <code>&lt;canvas&gt;</code>. <a href="https://caniuse.com/canvas">Supported browsers</a></p>
+      </canvas>
     </div>
   </div>
-
-  <script src="js/const.js"></script>
-  <script src="js/tile.js"></script>
-  <script src="js/setup.js"></script>
-  <script src="js/defaultFreighter.js"></script>
 </body>
 </html>
