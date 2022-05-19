@@ -8,17 +8,20 @@ const buildDefaultFreighter = () => {
     }
   }
 
-  grid[10][0].updateTile(LARGE_ROOM, 0, true);
+  grid[10][0].updateTile(LARGE_ROOM, 0);
+  grid[10][0].updateIsFixed(true);
 
   grid[7][1].updateTile(LARGE_ROOM);
   grid[8][1].updateTile(LARGE_ROOM);
   grid[9][1].updateTile(LARGE_ROOM);
-  grid[10][1].updateTile(LARGE_ROOM, 0, true);
+  grid[10][1].updateTile(LARGE_ROOM, 0);
+  grid[10][1].updateIsFixed(true);
   grid[11][1].updateTile(LARGE_ROOM);
   grid[12][1].updateTile(LARGE_ROOM);
 
   grid[9][2].updateTile(LARGE_ROOM);
-  grid[10][2].updateTile(STAIRS_DOWN, 0, true);
+  grid[10][2].updateTile(STAIRS_DOWN, 0);
+  grid[10][2].updateIsFixed(true);
   grid[12][2].updateTile(LARGE_ROOM);
 
   grid[9][3].updateTile(LARGE_ROOM);
