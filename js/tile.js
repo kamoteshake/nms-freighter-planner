@@ -1,5 +1,5 @@
 class Tile {
-  constructor(x, y, rotation, type, isFixed) {
+  constructor(x, y, rotation, type, isFixed, canvasId) {
     this.x = x ?? 0;
     this.y = y ?? 0;
     this.rotation = rotation ?? 0;
@@ -7,6 +7,7 @@ class Tile {
     this.type = type ?? EMPTY;
     this.img = typeImages[type];
     this.hovered = false;
+    this.canvasId = canvasId ?? 'canvas';
   }
 
   mouseEnter() {
@@ -35,7 +36,7 @@ class Tile {
   }
 
   draw() {
-    const ctx = document.getElementById('canvas').getContext('2d');
+    const ctx = document.getElementById(this.canvasId).getContext('2d');
     const img = new Image();
     img.onload = () => {
       ctx.save();

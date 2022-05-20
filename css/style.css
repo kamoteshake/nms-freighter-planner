@@ -11,6 +11,10 @@ body {
   padding: 16px;
 }
 
+canvas {
+  border: 1px solid #000;
+}
+
 hr {
   margin: 24px 0;
 }
@@ -153,13 +157,6 @@ button:disabled > img {
   margin: 24px;
 }
 
-.tilePreviewContainer .tilePreview {
-  margin-top: 8px;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.canvas {
-  border: 1px solid #000;
+.tilePreviewContainer h4 {
+  margin-bottom: 16px;
 }

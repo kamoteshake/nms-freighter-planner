@@ -4,7 +4,7 @@ let orbitalExocraftMaterializerCount = parseInt(localStorage.getItem('orbitalExo
 let currentFloor = parseInt(localStorage.getItem('currentFloor') ?? 0);
 let currentType = EMPTY;
 let currentRotation = 0;
-const tilePreview = new Tile();
+const tilePreview = new Tile(0, 0, currentRotation, currentType, false, 'tilePreview');
 
 const handleRoomButton = e => {
   const type = e.getAttribute('data-type');
@@ -14,7 +14,7 @@ const handleRoomButton = e => {
   // reset the rotation when choosing a new floor type
   currentRotation = 0
 
-  // updateTilePreview();
+  updateTilePreview();
 };
 
 const handleCWRotate = () => {
@@ -26,7 +26,7 @@ const handleCWRotate = () => {
     currentRotation = newRotation;
   }
 
-  // updateTilePreview();
+  updateTilePreview();
 };
 
 const handleCCWRotate = () => {
@@ -38,18 +38,25 @@ const handleCCWRotate = () => {
     currentRotation = newRotation;
   }
 
-  // updateTilePreview();
+  updateTilePreview();
 };
 
 const handleDeleteTile = () => {
   currentType = EMPTY;
   currentRotation = 0;
 
-  // updateTilePreview();
+  updateTilePreview();
 };
 
 const handleSaveFloor = () => {
-  localStorage.setItem(`floor_${currentFloor}`, JSON.stringify(grid));
+  // get the saved floors
+  const floors = JSON.parse(localStorage.getItem('floors') ?? '{}');
+
+  // add or overwrite the current floor
+  floors[`floor_${currentFloor}`] = grid;
+
+  // save the new floors
+  localStorage.setItem('floors', JSON.stringify(floors));
 };
 
 const handlePreviousFloor = () => {
@@ -171,7 +178,11 @@ const updateOrbitalExocraftMaterializerButton = () => {
 };
 
 const updateTilePreview = () => {
+  // if the tile preview has the same type and rotation, do nothing
+  if (tilePreview.type === currentType && tilePreview.rotation === currentRotation) return;
+
   tilePreview.updateTile(currentType, currentRotation);
+  tilePreview.draw();
 };
 
 const renderContent = () => {
@@ -230,8 +241,6 @@ const handleMouseDown = e => {
     // if the clicked tile has the same type and rotation, do nothing
     if (clickedTile.type === currentType && clickedTile.rotation === currentRotation) return;
 
-    console.log(currentRotation);
-
     clickedTile.updateTile(currentType, currentRotation);
     clickedTile.draw();
   }
@@ -247,12 +256,22 @@ const initiate = () => {
   canvas.addEventListener('mousemove', handleMouseMove);
   canvas.addEventListener('mouseleave', handleMouseLeave);
 
+  // setup tile preview canvas
+  const tilePreviewCanvas = document.getElementById('tilePreview');
+  tilePreviewCanvas.setAttribute('width', TILE_SIZE);
+  tilePreviewCanvas.setAttribute('height', TILE_SIZE);
+
+  
+  populateGrid();
+};
+
+const populateGrid = () => {
   // get saved grid
-  grid = JSON.parse(localStorage.getItem(`floor_${currentFloor}`) ?? '[]')
-    .map(row => row.map(tile => new Tile(tile.x, tile.y, tile.rotation, tile.type, tile.isFixed)));
+  grid = JSON.parse(localStorage.getItem('floors') ?? '{}')[`floor_${currentFloor}`]
+    ?.map(row => row.map(tile => new Tile(tile.x, tile.y, tile.rotation, tile.type, tile.isFixed)));
 
   // if there are no saved floor
-  if (!grid.length) {
+  if (!grid?.length) {
     // if it's the first floor
     if (currentFloor === 0) {
       // build the default freighter layout
@@ -269,15 +288,8 @@ const initiate = () => {
     }
   }
 
+  // draw the grid
   draw();
-
-  // draw tile preview
-  // const tilePreviewElement = document.getElementById('tilePreview');
-  // tilePreviewElement.appendChild(tilePreview.draw());
-
-  // renderContent();
-  // updateStorageUnitButton();
-  // updateOrbitalExocraftMaterializerButton();
 };
 
 const draw = () => {
