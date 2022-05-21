@@ -65,6 +65,8 @@ const handleFloorButtonClick = direction => {
     currentFloor += 1;
   }
 
+  localStorage.setItem('currentFloor', currentFloor);
+
   renderContent();
 };
 
@@ -182,7 +184,7 @@ const updateTilePreview = () => {
 const populateGrid = () => {
   // get saved grid
   let newGrid = JSON.parse(localStorage.getItem('floors') ?? '{}')[`floor_${currentFloor}`]
-    ?.map(row => row.map(tile => new Tile(tile.x, tile.y, tile.rotation, tile.type, tile.isFixed)));
+    ?.map(tiles => tiles.map(tile => new Tile(tile.x, tile.y, tile.rotation, tile.type, tile.isFixed)));
 
   // if there are no saved floor
   if (!newGrid?.length) {
@@ -225,7 +227,6 @@ const initiate = () => {
 
   tableBody.addEventListener('mousedown', handleTableClick);
   tableBody.addEventListener('mouseover', handleTableClick);
-
 
   // create row (y)
   for(let row = 0; row < MAX_ROW; row++) {
