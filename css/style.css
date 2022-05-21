@@ -9,6 +9,7 @@ body {
   color: #fff;
   font-family: Arial, Helvetica, sans-serif;
   padding: 16px;
+  user-select: none;
 }
 
 hr {
@@ -104,7 +105,6 @@ button:disabled > img {
 
 .gridTable {
   border-collapse: collapse;
-  user-select: none;
   border: 1px solid #000;
   max-width: max-content;
 }
@@ -114,20 +114,53 @@ button:disabled > img {
   position: relative;
   width: 50px;
   height: 50px;
-  border: 1px solid #000;
   cursor: pointer;
 }
 
 .tile:hover {
-  border: 1px solid #0F0;
+  box-shadow: inset 0px 0px 0px 1px #0F0;
 }
 
 .tile > img {
   pointer-events: none;
 }
 
+.tile.--type-corridor {
+  background: url('../img/corridor.png') center center #262626; 
+}
+.tile.--type-cross_junction {
+  background: url('../img/crossJunction.png') center center #262626;
+}
+.tile.--type-curved_corridor {
+  background: url('../img/curvedCorridor.png') center center #262626;
+}
+.tile.--type-empty {
+  background: url('../img/emptyRoom.png') center center #262626;
+}
+.tile.--type-fleet_command {
+  background: url('../img/fleetCommand.png') center center #262626;
+}
+.tile.--type-junction {
+  background: url('../img/junction.png') center center #262626;
+}
+.tile.--type-large_room {
+  background: url('../img/largeRoom.png') center center #262626;
+}
+.tile.--type-orbital_exocraft_materializer {
+  background: url('../img/orbitalExocraftMaterializer.png') center center #262626;
+}
+.tile.--type-stairs_down {
+  background: url('../img/stairsDown.png') center center #262626;
+}
+.tile.--type-stairs_up {
+  background: url('../img/stairsUp.png') center center #262626;
+}
+.tile.--type-storage_unit {
+  background: url('../img/storageUnit.png') center center #262626;
+}
+
 .tile.--fixed {
-  border: 1px solid #f00;
+  box-shadow: inset 0px 0px 0px 1px #f00;
   pointer-events: none;
 }
 
@@ -145,13 +178,17 @@ button:disabled > img {
 }
 
 .tilePreviewContainer {
-  text-align: center;
   margin: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .tilePreviewContainer .tilePreview {
-  margin-top: 8px;
-  display: flex;
-  justify-content: center;
+  margin-top: 16px;
+  width: 50px;
+  box-sizing: content-box;
+  height: 50px;
   pointer-events: none;
+  border: 1px solid #000;
 }

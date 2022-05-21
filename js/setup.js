@@ -1,17 +1,10 @@
-// config
-const maxRow = 21;
-const maxColumn = 21;
-const maxFloor = 14;
-const maxStorageUnit = 10;
-const maxOrbitalExocraftMaterializer = 1;
-
-let grid = [];
+let grid = make2dArray(MAX_COLUMN, MAX_ROW);
 let storageUnitCount = parseInt(localStorage.getItem('storageUnitCount') ?? 0)
 let orbitalExocraftMaterializerCount = parseInt(localStorage.getItem('orbitalExocraftMaterializerCount') ?? 0);
 let currentFloor = parseInt(localStorage.getItem('currentFloor') ?? 0);
 let currentType = EMPTY;
 let currentRotation = 0;
-const tilePreview = new Tile();
+const tilePreview = new Tile('preview', 'preview', currentRotation, currentType);
 
 const handleRoomButton = e => {
   const type = e.getAttribute('data-type');
@@ -24,22 +17,20 @@ const handleRoomButton = e => {
   updateTilePreview();
 };
 
-const handleCWRotate = () => {
-  const newRotation = currentRotation + 90;
+const handleRotate = direction => {
+  let newRotation = currentRotation;
+
+  if (direction === 'clockwise') {
+    newRotation += 90;
+  }
+  else if (direction === 'counterClockwise') {
+    newRotation -= 90; 
+  }
 
   if(newRotation >= 360) {
     currentRotation = 0;
-  } else {
-    currentRotation = newRotation;
-  }
-
-  updateTilePreview();
-};
-
-const handleCCWRotate = () => {
-  const newRotation = currentRotation - 90;
-
-  if(newRotation < 0) {
+  } 
+  else if(newRotation < 0) {
     currentRotation = 270;
   } else {
     currentRotation = newRotation;
@@ -56,19 +47,23 @@ const handleDeleteTile = () => {
 };
 
 const handleSaveFloor = () => {
-  localStorage.setItem(`floor_${currentFloor}`, JSON.stringify(grid));
+  // get the saved floors
+  const floors = JSON.parse(localStorage.getItem('floors') ?? '{}');
+
+  // add or overwrite the current floor
+  floors[`floor_${currentFloor}`] = grid;
+
+  // save the new floors
+  localStorage.setItem('floors', JSON.stringify(floors));
 };
 
-const handlePreviousFloor = () => {
-  currentFloor -= 1;
-
-  localStorage.setItem('currentFloor', currentFloor);
-
-  renderContent();
-};
-
-const handleNextFloor = () => {
-  currentFloor += 1;
+const handleFloorButtonClick = direction => {
+  if (direction === 'previous') {
+    currentFloor -= 1;
+  }
+  else if (direction === 'next') {
+    currentFloor += 1;
+  }
 
   localStorage.setItem('currentFloor', currentFloor);
 
@@ -80,15 +75,21 @@ const handleTableClick = e => {
 
   // check if the left button is clicked or down
   if (e.buttons === 1) {
-    // to support older browser, I'm using getAttribute
+    // using getAttribute to support older browser
     var x = parseInt(e.target.getAttribute('data-x'));
     var y = parseInt(e.target.getAttribute('data-y'));
     
-    const tile = grid[x][y];
+    const clickedTile = grid[x][y];
+
+    // if the clicked tile is the same, do nothing
+    if (clickedTile.type === currentType && clickedTile.rotation === currentRotation) return;
+
+    clickedTile.updateTile(currentType, currentRotation);
+    clickedTile.draw();
 
     // add storage unit count
     if (currentType === STORAGE_UNIT) {
-      if (storageUnitCount === maxStorageUnit) return;
+      if (storageUnitCount === MAX_STORAGE_UNIT) return;
 
       storageUnitCount += 1;
       localStorage.setItem('storageUnitCount', storageUnitCount);
@@ -97,7 +98,7 @@ const handleTableClick = e => {
     }
 
     // subtract storage unit count when removing storage unit room
-    if (tile.type === STORAGE_UNIT && currentType !== STORAGE_UNIT) {
+    if (clickedTile.type === STORAGE_UNIT && currentType !== STORAGE_UNIT) {
       storageUnitCount -= 1;
       localStorage.setItem('storageUnitCount', storageUnitCount);
 
@@ -106,7 +107,7 @@ const handleTableClick = e => {
 
     // add orbital exocraft materializer count
     if (currentType === ORBITAL_EXOCRAFT_MATERIALIZER) {
-      if (orbitalExocraftMaterializerCount === maxOrbitalExocraftMaterializer) return;
+      if (orbitalExocraftMaterializerCount === MAX_ORBITAL_EXOCRAFT_MATERIALIZER) return;
 
       orbitalExocraftMaterializerCount += 1;
       localStorage.setItem('orbitalExocraftMaterializerCount', orbitalExocraftMaterializerCount);
@@ -115,71 +116,28 @@ const handleTableClick = e => {
     }
 
     // subtract storage unit count when removing storage unit room
-    if (tile.type === ORBITAL_EXOCRAFT_MATERIALIZER && currentType !== ORBITAL_EXOCRAFT_MATERIALIZER) {
+    if (clickedTile.type === ORBITAL_EXOCRAFT_MATERIALIZER && currentType !== ORBITAL_EXOCRAFT_MATERIALIZER) {
       orbitalExocraftMaterializerCount -= 1;
       localStorage.setItem('orbitalExocraftMaterializerCount', orbitalExocraftMaterializerCount);
 
       updateOrbitalExocraftMaterializerButton();
     }
-
-    tile.updateTile(currentType, currentRotation);
   }
 };
 
-const populateTableGrid = () => {
-  // get saved grid
-  const serializedGrid = JSON.parse(localStorage.getItem(`floor_${currentFloor}`) ?? '[]')
-    .map(row => row.map(tile => new Tile(tile.x, tile.y, tile.type, tile.rotation, tile.isFixed)));
-
-  grid = serializedGrid;
-
-  // create new empty grid if there are no grid
-  if (!grid.length) {
-    for(let row = 0; row < maxRow; row++) {
-      const rowArray = [];
-  
-      // create column
-      for(let column = 0; column < maxColumn; column++) {
-        const newTile = new Tile(row, column);
-        rowArray.push(newTile);
-  
-        const tableColumn = document.getElementById(`tile_${row}_${column}`);
-        tableColumn.innerHTML = '';
-        tableColumn.appendChild(newTile.draw());
-      }
-  
-      grid.push(rowArray);
-    }
-  } else {
-    grid.forEach((row, rowIndex) => {
-      row.forEach((tile, tileIndex) => {
-        const tableColumn = document.getElementById(`tile_${rowIndex}_${tileIndex}`);
-        tableColumn.innerHTML = '';
-        tableColumn.appendChild(tile.draw());
-      });
-    });
-  }
-
-  // if it's the first floor and there is no saves for the first floor,
-  // render the default freighter floor
-  if (currentFloor === 0 && !localStorage.getItem('floor_0')) {
-    buildDefaultFreighter(grid);
-  }
-};
-
-const updateFloorLabel = () => {
+const updateFloorControl = () => {
+  // update floor label
   const floorLabel = document.getElementById('floorLabel');
   floorLabel.innerText = `Floor ${currentFloor + 1}`;
-};
 
-const updateFloorButtons = () => {
+  // update floor buttons
   const previousFloorButton = document.getElementById('previousFloorButton');
   const nextFloorButton = document.getElementById('nextFloorButton');
 
   if (currentFloor === 0) {
     previousFloorButton.disabled = true;
   }
-  else if (currentFloor === maxFloor - 1) {
+  else if (currentFloor === MAX_FLOOR - 1) {
     nextFloorButton.disabled = true;
   }
   else {
@@ -190,42 +148,76 @@ const updateFloorButtons = () => {
       nextFloorButton.disabled = false;
     }
   }
-};
+}
 
 const updateStorageUnitButton = () => {
   const storageUnitButton = document.getElementById('storageUnitButton');
 
-  if (storageUnitCount === maxStorageUnit && !storageUnitButton.disabled) {
+  if (storageUnitCount === MAX_STORAGE_UNIT && !storageUnitButton.disabled) {
     storageUnitButton.disabled = true;
   }
-  if (storageUnitCount !== maxStorageUnit && storageUnitButton.disabled) {
+  if (storageUnitCount !== MAX_STORAGE_UNIT && storageUnitButton.disabled) {
     storageUnitButton.disabled = false;
   }
 
-  storageUnitButton.getElementsByTagName('span')[0].innerText = `Storage Unit (${maxStorageUnit - storageUnitCount})`;
+  storageUnitButton.getElementsByTagName('span')[0].innerText = `Storage Unit (${MAX_STORAGE_UNIT - storageUnitCount})`;
 };
 
 const updateOrbitalExocraftMaterializerButton = () => {
   const orbitalExocraftMaterializerButton = document.getElementById('orbitalExocraftMaterializerButton');
 
-  if (orbitalExocraftMaterializerCount === maxOrbitalExocraftMaterializer && !orbitalExocraftMaterializerButton.disabled) {
+  if (orbitalExocraftMaterializerCount === MAX_ORBITAL_EXOCRAFT_MATERIALIZER && !orbitalExocraftMaterializerButton.disabled) {
     orbitalExocraftMaterializerButton.disabled = true;
   }
-  if (orbitalExocraftMaterializerCount !== maxOrbitalExocraftMaterializer && orbitalExocraftMaterializerButton.disabled) {
+  if (orbitalExocraftMaterializerCount !== MAX_ORBITAL_EXOCRAFT_MATERIALIZER && orbitalExocraftMaterializerButton.disabled) {
     orbitalExocraftMaterializerButton.disabled = false;
   }
 
-  orbitalExocraftMaterializerButton.getElementsByTagName('span')[0].innerText = `Orbital Exocraft Materializer (${maxOrbitalExocraftMaterializer - orbitalExocraftMaterializerCount})`;
+  orbitalExocraftMaterializerButton.getElementsByTagName('span')[0].innerText = `Orbital Exocraft Materializer (${MAX_ORBITAL_EXOCRAFT_MATERIALIZER - orbitalExocraftMaterializerCount})`;
 };
 
 const updateTilePreview = () => {
   tilePreview.updateTile(currentType, currentRotation);
+  tilePreview.draw();
+};
+
+const populateGrid = () => {
+  // get saved grid
+  let newGrid = JSON.parse(localStorage.getItem('floors') ?? '{}')[`floor_${currentFloor}`]
+    ?.map(tiles => tiles.map(tile => new Tile(tile.x, tile.y, tile.rotation, tile.type, tile.isFixed)));
+
+  // if there are no saved floor
+  if (!newGrid?.length) {
+    // if it's the first floor
+    if (currentFloor === 0) {
+      // build the default freighter layout
+      newGrid = buildDefaultFreighter();
+    }
+    else {
+      // create empty grid
+      newGrid = createEmptyGrid();
+    }
+  }
+
+  draw(newGrid);
+};
+
+const draw = newGrid => {
+  newGrid.forEach(newTiles => {
+    newTiles.forEach(newTile => {
+      const oldTile = grid[newTile.x][newTile.y];
+      // only update id the tile in the grid is different
+      if (oldTile?.type === newTile.type && oldTile?.rotation === newTile.rotation && oldTile?.isFixed === newTile.isFixed) return;
+      
+      newTile.draw();
+      grid[newTile.x][newTile.y] = newTile;
+    })
+  })
 };
 
 const renderContent = () => {
-  updateFloorButtons();
-  updateFloorLabel();
-  populateTableGrid();
+  updateFloorControl();
+  populateGrid();
 }
 
 const initiate = () => {
@@ -236,15 +228,14 @@ const initiate = () => {
   tableBody.addEventListener('mousedown', handleTableClick);
   tableBody.addEventListener('mouseover', handleTableClick);
 
-
-  // create row
-  for(let row = 0; row < maxRow; row++) {
+  // create row (y)
+  for(let row = 0; row < MAX_ROW; row++) {
     const tableRow = document.createElement('tr');
 
-    // create column
-    for(let column = 0; column < maxColumn; column++) {
+    // create column (x)
+    for(let column = 0; column < MAX_COLUMN; column++) {
       const tableColumn = document.createElement('td');
-      tableColumn.id = `tile_${row}_${column}`;
+      tableColumn.id = `tile_${column}_${row}`;
 
       tableRow.appendChild(tableColumn);
     }
@@ -255,8 +246,7 @@ const initiate = () => {
   gridTable.appendChild(tableBody);
 
   // draw tile preview
-  const tilePreviewElement = document.getElementById('tilePreview');
-  tilePreviewElement.appendChild(tilePreview.draw());
+  tilePreview.draw()
 
   renderContent();
   updateStorageUnitButton();

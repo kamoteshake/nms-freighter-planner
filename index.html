@@ -8,6 +8,12 @@
 
   <script src="https://kit.fontawesome.com/818d47a004.js" crossorigin="anonymous"></script>
 
+  <script src="js/const.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/Tile.js"></script>
+  <script src="js/setup.js"></script>
+  <script src="js/defaultFreighter.js"></script>
+
   <title>Freighter Planner</title>
 </head>
 <body>
@@ -15,12 +21,12 @@
     <div class="controlContainer">
       <div class="tilePreviewContainer">
         <h4>Selected Tile</h4>
-        <div id="tilePreview" class="tilePreview"></div>
+        <div id="tile_preview_preview" class="tilePreview"></div>
       </div>
 
       <div class="editControls">
-        <button class="editButton" onClick="handleCCWRotate();" title="Rotate Counter Clockwise"><i class="fa-solid fa-arrow-rotate-left"></i></button>
-        <button class="editButton" onCLick="handleCWRotate();" title="Rotate Clockwise"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+        <button class="editButton" onClick="handleRotate('counterClockwise');" title="Rotate Counter Clockwise"><i class="fa-solid fa-arrow-rotate-left"></i></button>
+        <button class="editButton" onCLick="handleRotate('clockwise');" title="Rotate Clockwise"><i class="fa-solid fa-arrow-rotate-right"></i></button>
         <button class="editButton" onCLick="handleDeleteTile();" title="Delete Tile"><i class="fa-solid fa-eraser"></i></button>
         <button class="editButton" onCLick="handleSaveFloor();" title="Save Floor"><i class="fa-solid fa-floppy-disk"></i></button>
       </div>
@@ -43,17 +49,12 @@
   
     <div id="gridContainer" class="gridContainer">
       <div class="floorSelectContainer">
-        <button id="previousFloorButton" class="floorSelectButton" onClick="handlePreviousFloor();"><i class="fa-solid fa-caret-left"></i></button>
+        <button id="previousFloorButton" class="floorSelectButton" onClick="handleFloorButtonClick('previous');"><i class="fa-solid fa-caret-left"></i></button>
         <h2 id="floorLabel"></h2>
-        <button id="nextFloorButton" class="floorSelectButton" onClick="handleNextFloor();"><i class="fa-solid fa-caret-right"></i></button>
+        <button id="nextFloorButton" class="floorSelectButton" onClick="handleFloorButtonClick('next');"><i class="fa-solid fa-caret-right"></i></button>
       </div>
       <table id="gridTable" class="gridTable"></table>
     </div>
   </div>
-
-  <script src="js/const.js"></script>
-  <script src="js/tile.js"></script>
-  <script src="js/setup.js"></script>
-  <script src="js/defaultFreighter.js"></script>
 </body>
 </html>
