@@ -17,24 +17,16 @@ const handleRoomButton = e => {
   updateTilePreview();
 };
 
-const handleCWRotate = () => {
-  const newRotation = currentRotation + 90;
+const handleRotate = direction => {
+  const newRotation = currentRotation + (direction * 90);
 
   if(newRotation >= 360) {
     currentRotation = 0;
-  } else {
-    currentRotation = newRotation;
   }
-
-  updateTilePreview();
-};
-
-const handleCCWRotate = () => {
-  const newRotation = currentRotation - 90;
-
-  if(newRotation < 0) {
+  else if(newRotation < 0) {
     currentRotation = 270;
-  } else {
+  }
+  else {
     currentRotation = newRotation;
   }
 
@@ -57,6 +49,17 @@ const handleSaveFloor = () => {
 
   // save the new floors
   localStorage.setItem('floors', JSON.stringify(floors));
+};
+
+const handleFloorButtonClick = direction => {
+  if (direction === 'previous') {
+    currentFloor -= 1;
+  }
+  else {
+    currentFloor += 1;
+  }
+
+  renderContent();
 };
 
 const handlePreviousFloor = () => {
@@ -126,12 +129,12 @@ const handleTableClick = e => {
   }
 };
 
-const updateFloorLabel = () => {
+const updateFloorControl = () => {
+  // update floor label
   const floorLabel = document.getElementById('floorLabel');
   floorLabel.innerText = `Floor ${currentFloor + 1}`;
-};
 
-const updateFloorButtons = () => {
+  // update floor buttons
   const previousFloorButton = document.getElementById('previousFloorButton');
   const nextFloorButton = document.getElementById('nextFloorButton');
 
@@ -149,7 +152,7 @@ const updateFloorButtons = () => {
       nextFloorButton.disabled = false;
     }
   }
-};
+}
 
 const updateStorageUnitButton = () => {
   const storageUnitButton = document.getElementById('storageUnitButton');
@@ -184,12 +187,6 @@ const updateTilePreview = () => {
   tilePreview.updateTile(currentType, currentRotation);
   tilePreview.draw();
 };
-
-const renderContent = () => {
-  updateFloorButtons();
-  updateFloorLabel();
-  populateTableGrid();
-}
 
 let lastHovered = { x: null, y: null };
 
@@ -246,6 +243,45 @@ const handleMouseDown = e => {
   }
 };
 
+const populateGrid = () => {
+  // get saved grid
+  let newGrid = JSON.parse(localStorage.getItem('floors') ?? '{}')[`floor_${currentFloor}`]
+    ?.map(row => row.map(tile => new Tile(tile.x, tile.y, tile.rotation, tile.type, tile.isFixed)));
+
+  // if there are no saved floor
+  if (!newGrid?.length) {
+    // if it's the first floor
+    if (currentFloor === 0) {
+      // build the default freighter layout
+      newGrid = buildDefaultFreighter();
+    }
+    else {
+      // create empty grid
+      newGrid = createEmptyGrid();
+    }
+  }
+
+  // draw the grid
+  draw(newGrid);
+};
+
+const draw = newGrid => {
+  // draw each tiles
+  newGrid.forEach(newTiles => {
+    newTiles.forEach(newTile => {
+      const oldTile = grid[newTile.x][newTile.y];
+      if (oldTile?.type === newTile.type && oldTile?.rotation === newTile.rotation && oldTile?.isFixed === newTile.isFixed) return;
+      newTile.draw();
+      grid[newTile.x][newTile.y] = newTile;
+    })
+  })
+};
+
+const renderContent = () => {
+  updateFloorControl();
+  populateGrid();
+}
+
 const initiate = () => {
   // setup canvas
   const canvas = document.getElementById('canvas');
@@ -261,44 +297,10 @@ const initiate = () => {
   tilePreviewCanvas.setAttribute('width', TILE_SIZE);
   tilePreviewCanvas.setAttribute('height', TILE_SIZE);
 
-  
-  populateGrid();
-};
+  // draw tile preview
+  tilePreview.draw();
 
-const populateGrid = () => {
-  // get saved grid
-  grid = JSON.parse(localStorage.getItem('floors') ?? '{}')[`floor_${currentFloor}`]
-    ?.map(row => row.map(tile => new Tile(tile.x, tile.y, tile.rotation, tile.type, tile.isFixed)));
-
-  // if there are no saved floor
-  if (!grid?.length) {
-    // if it's the first floor
-    if (currentFloor === 0) {
-      // build the default freighter layout
-      grid = buildDefaultFreighter();
-    }
-    else {
-      // create empty grid
-      for(let x = 0; x < MAX_COLUMN; x++) {
-        for(let y = 0; y < MAX_ROW; y++) {
-          const newTile = new Tile(x, y, 0, EMPTY, false);
-          grid[x][y] = newTile;
-        }
-      }
-    }
-  }
-
-  // draw the grid
-  draw();
-};
-
-const draw = () => {
-  // draw each tiles
-  grid.forEach(tiles => {
-    tiles.forEach(tile => {
-      tile.draw();
-    })
-  })
+  renderContent();
 };
 
 document.addEventListener('DOMContentLoaded', initiate);

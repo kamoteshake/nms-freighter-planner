@@ -21,3 +21,17 @@ const getGridCoorsFromMousePos = mouseEvent => {
 
   return { x, y };
 };
+
+const createEmptyGrid = () => {
+  const grid = make2dArray(MAX_COLUMN, MAX_ROW);
+  
+  // create empty grid
+  for(let x = 0; x < MAX_COLUMN; x++) {
+    for(let y = 0; y < MAX_ROW; y++) {
+      const newTile = new Tile(x, y, 0, EMPTY, false);
+      grid[x][y] = newTile;
+    }
+  }
+
+  return grid;
+};

@@ -1,12 +1,5 @@
 const buildDefaultFreighter = () => {
-  const grid = make2dArray(MAX_COLUMN, MAX_ROW)
-  // create empty grid
-  for(let x = 0; x < MAX_COLUMN; x++) {
-    for(let y = 0; y < MAX_ROW; y++) {
-      const newTile = new Tile(x, y, 0, EMPTY, false);
-      grid[x][y] = newTile;
-    }
-  }
+  const grid = createEmptyGrid();
 
   grid[10][0].updateTile(LARGE_ROOM, 0);
   grid[10][0].updateIsFixed(true);
