@@ -20,3 +20,28 @@ const createEmptyGrid = () => {
 
   return grid;
 };
+
+const getFloors = () => JSON.parse(localStorage.getItem('floors') ?? '{}')
+
+const getTilesCount = () => JSON.parse(localStorage.getItem('tilesCount') ?? '{}');
+
+const countTiles = () => {
+  const tilesCount = {};
+  const floors = getFloors();
+
+  Object.values(floors).forEach(floor => {
+    floor.forEach(tiles => {
+      tiles.forEach(tile => {
+        // skip if tile is empty
+        if (tile.type === EMPTY) return;
+
+        // get count of the same tile
+        let currentTileCount = tilesCount[tile.type] ?? 0;
+
+        tilesCount[tile.type] = currentTileCount + 1;
+      });
+    });
+  });
+
+  localStorage.setItem('tilesCount', JSON.stringify(tilesCount));
+};
