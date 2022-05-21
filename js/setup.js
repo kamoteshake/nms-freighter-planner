@@ -47,7 +47,14 @@ const handleDeleteTile = () => {
 };
 
 const handleSaveFloor = () => {
-  localStorage.setItem(`floor_${currentFloor}`, JSON.stringify(grid));
+  // get the saved floors
+  const floors = JSON.parse(localStorage.getItem('floors') ?? '{}');
+
+  // add or overwrite the current floor
+  floors[`floor_${currentFloor}`] = grid;
+
+  // save the new floors
+  localStorage.setItem('floors', JSON.stringify(floors));
 };
 
 const handleFloorButtonClick = direction => {
