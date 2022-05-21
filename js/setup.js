@@ -117,12 +117,12 @@ const handleTableClick = e => {
   }
 };
 
-const updateFloorLabel = () => {
+const updateFloorControl = () => {
+  // update floor label
   const floorLabel = document.getElementById('floorLabel');
   floorLabel.innerText = `Floor ${currentFloor + 1}`;
-};
 
-const updateFloorButtons = () => {
+  // update floor buttons
   const previousFloorButton = document.getElementById('previousFloorButton');
   const nextFloorButton = document.getElementById('nextFloorButton');
 
@@ -140,7 +140,7 @@ const updateFloorButtons = () => {
       nextFloorButton.disabled = false;
     }
   }
-};
+}
 
 const updateStorageUnitButton = () => {
   const storageUnitButton = document.getElementById('storageUnitButton');
@@ -207,8 +207,7 @@ const draw = newGrid => {
 };
 
 const renderContent = () => {
-  updateFloorButtons();
-  updateFloorLabel();
+  updateFloorControl();
   populateGrid();
 }
 
