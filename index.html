@@ -21,7 +21,7 @@
     <div class="controlContainer">
       <div class="tilePreviewContainer">
         <h4>Selected Tile</h4>
-        <div id="tilePreview" class="tilePreview"></div>
+        <div id="tile_preview_preview" class="tilePreview"></div>
       </div>
 
       <div class="editControls">
@@ -49,9 +49,9 @@
   
     <div id="gridContainer" class="gridContainer">
       <div class="floorSelectContainer">
-        <button id="previousFloorButton" class="floorSelectButton" onClick="handlePreviousFloor();"><i class="fa-solid fa-caret-left"></i></button>
+        <button id="previousFloorButton" class="floorSelectButton" onClick="handleFloorButtonClick('previous');"><i class="fa-solid fa-caret-left"></i></button>
         <h2 id="floorLabel"></h2>
-        <button id="nextFloorButton" class="floorSelectButton" onClick="handleNextFloor();"><i class="fa-solid fa-caret-right"></i></button>
+        <button id="nextFloorButton" class="floorSelectButton" onClick="handleFloorButtonClick('next');"><i class="fa-solid fa-caret-right"></i></button>
       </div>
       <table id="gridTable" class="gridTable"></table>
     </div>
