@@ -14,6 +14,7 @@ const typeImages = Object.freeze({
   [CORRIDOR]: 'img/corridor.png',
   [CROSS_JUNCTION]: 'img/crossJunction.png',
   [CURVED_CORRIDOR]: 'img/curvedCorridor.png',
+  [EMPTY]: 'img/emptyRoom.png',
   [FLEET_COMMAND]: 'img/fleetCommand.png',
   [JUNCTION]: 'img/junction.png',
   [LARGE_ROOM]: 'img/largeRoom.png',
