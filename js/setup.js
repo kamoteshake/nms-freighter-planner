@@ -4,7 +4,7 @@ let orbitalExocraftMaterializerCount = parseInt(localStorage.getItem('orbitalExo
 let currentFloor = parseInt(localStorage.getItem('currentFloor') ?? 0);
 let currentType = EMPTY;
 let currentRotation = 0;
-const tilePreview = new Tile();
+const tilePreview = new Tile(0, 0, currentRotation, currentType);
 
 const handleRoomButton = e => {
   const type = e.getAttribute('data-type');
@@ -17,22 +17,20 @@ const handleRoomButton = e => {
   updateTilePreview();
 };
 
-const handleCWRotate = () => {
-  const newRotation = currentRotation + 90;
+const handleRotate = direction => {
+  let newRotation = currentRotation;
+
+  if (direction === 'clockwise') {
+    newRotation += 90;
+  }
+  else if (direction === 'counterClockwise') {
+    newRotation -= 90; 
+  }
 
   if(newRotation >= 360) {
     currentRotation = 0;
-  } else {
-    currentRotation = newRotation;
-  }
-
-  updateTilePreview();
-};
-
-const handleCCWRotate = () => {
-  const newRotation = currentRotation - 90;
-
-  if(newRotation < 0) {
+  } 
+  else if(newRotation < 0) {
     currentRotation = 270;
   } else {
     currentRotation = newRotation;
