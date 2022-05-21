@@ -21,13 +21,14 @@ const createEmptyGrid = () => {
   return grid;
 };
 
-const getFloors = () => JSON.parse(localStorage.getItem('floors') ?? '{}')
+const getFloors = () => JSON.parse(localStorage.getItem('floors'))
 
-const getTilesCount = () => JSON.parse(localStorage.getItem('tilesCount') ?? '{}');
+const getTilesCount = () => JSON.parse(localStorage.getItem('tilesCount'));
 
-const countTiles = () => {
+const countTiles = grid => {
   const tilesCount = {};
-  const floors = getFloors();
+  // if there are not saved floors, use grid
+  const floors = getFloors() ?? { grid };
 
   Object.values(floors).forEach(floor => {
     floor.forEach(tiles => {

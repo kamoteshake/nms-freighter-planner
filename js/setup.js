@@ -126,19 +126,21 @@ const updateRoomButtonsWithLimit = () => {
   ROOM_LIMITS.forEach(room => {
     const buttonElement = document.querySelector(`[data-type="${room.type}"]`);
 
+    const roomTypeCount = tilesCount?.[room.type] ?? 0;
+
     // disable button
-    if (tilesCount[room.type] === room.limit && !buttonElement.disabled) {
+    if (roomTypeCount === room.limit && !buttonElement.disabled) {
       buttonElement.disabled = true;
     }
 
     // enable the button
-    if (tilesCount[room.type] !== room.limit && buttonElement.disabled) {
+    if (roomTypeCount !== room.limit && buttonElement.disabled) {
       buttonElement.disabled = false;
     }
 
     // update the button text to add remaining rooms available
     let buttonText = buttonElement.getElementsByClassName('availableRoomsCount')[0];
-    buttonText.innerHTML = `&nbsp;(${room.limit - (tilesCount[room.type] ?? 0)})`;
+    buttonText.innerHTML = `&nbsp;(${room.limit - roomTypeCount})`;
   });
 };
 
@@ -150,7 +152,7 @@ const updateTilePreview = () => {
 const populateGrid = () => {
   // get saved floors
   const floors = getFloors();
-  let newGrid = floors[`floor_${currentFloor}`]
+  let newGrid = floors?.[`floor_${currentFloor}`]
     ?.map(tiles => tiles.map(tile => new Tile(tile.x, tile.y, tile.rotation, tile.type, tile.isFixed)));
 
   // if there are no saved floor
@@ -216,7 +218,7 @@ const initiate = () => {
   tilePreview.draw()
 
   renderContent();
-  countTiles();
+  countTiles(grid);
   updateRoomButtonsWithLimit();
 };
 

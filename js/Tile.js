@@ -27,27 +27,20 @@ class Tile {
 
     // if the tile is not a preview, update the tiles count
     if (!this.isPreview) {
-      // get the current tiles count
       const tilesCount = getTilesCount();
-  
-      // add to count if the new tile is not empty and not the same as the current tile
-      if (newType !== EMPTY && newType !== this.type) {
-        // check if the new tile exists in the tilesCount
-        if (tilesCount[newType] === undefined) {
-          tilesCount[newType] = 0;
-        }
+      const newTileCount = tilesCount?.[newType] ?? 0;
+      const currentTileCount = tilesCount?.[this.type] ?? 0;
 
-        tilesCount[newType] += 1;
-      }
-  
-      // subtract from count if the current tile is not empty and not the same as the new tile
-      if (this.type !== EMPTY && newType !== this.type) {
-        // check if the current tile exists in the tilesCount
-        if (tilesCount[this.type] === undefined) {
-          tilesCount[this.type] = 0;
+      // if the new type is different from the current type
+      if (newType !== this.type) {
+        if (newType !== EMPTY) {
+          // if the new type is not empty, add 1 to the new type count
+          tilesCount[newType] = newTileCount + 1;
         }
-
-        tilesCount[this.type] -= 1;
+        if (this.type !== EMPTY) {
+          // the current tyle is not empty, subtract 1 from the current tile count
+          tilesCount[this.type] = currentTileCount - 1;
+        }
       }
   
       // save new tiles count
