@@ -21,7 +21,7 @@
     <div class="controlContainer">
       <div class="tilePreviewContainer">
         <h4>Selected Tile</h4>
-        <div id="tile_preview_preview" class="tilePreview"></div>
+        <div id="tilePreview" class="tilePreview"></div>
       </div>
 
       <div class="editControls">
@@ -34,16 +34,56 @@
       <hr />
 
       <div class="controls">
-        <button class="controlButton" onClick="handleRoomButton(this);" data-type="corridor"><img src="img/corridor.png" /> <span>Corridor</span></button>
-        <button class="controlButton" onClick="handleRoomButton(this);" data-type="curved_corridor"><img src="img/curvedCorridor.png" /> <span>Curved Corridor</span></button>
-        <button class="controlButton" onClick="handleRoomButton(this);" data-type="junction"><img src="img/junction.png" /> <span>Junction</span></button>
-        <button class="controlButton" onClick="handleRoomButton(this);" data-type="cross_junction"><img src="img/crossJunction.png" /> <span>Cross Junction</span></button>
-        <button class="controlButton" onClick="handleRoomButton(this);" data-type="stairs_down"><img src="img/stairsDown.png" /> <span>Stairs (Down)</span></button>
-        <button class="controlButton" onClick="handleRoomButton(this);" data-type="stairs_up"><img src="img/stairsUp.png" /> <span>Stairs (Up)</span></button>
-        <button class="controlButton" onClick="handleRoomButton(this);" data-type="large_room"><img src="img/largeRoom.png" /> <span>Large Room</span></button>
-        <button class="controlButton" onClick="handleRoomButton(this);" data-type="fleet_command"><img src="img/fleetCommand.png" /> <span>Fleet Command</span></button>
-        <button id="storageUnitButton" class="controlButton" onClick="handleRoomButton(this);" data-type="storage_unit"><img src="img/storageUnit.png" /> <span>Storage Unit</span></button>
-        <button id="orbitalExocraftMaterializerButton" class="controlButton" onClick="handleRoomButton(this);" data-type="orbital_exocraft_materializer"><img src="img/orbitalExocraftMaterializer.png" /> <span>Orbital Exocraft Materializer</span></button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="corridor">
+          <img src="img/corridor.png" />
+          <span>Corridor</span>
+          <span class="availableRoomsCount"></span>
+        </button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="curved_corridor">
+          <img src="img/curvedCorridor.png" />
+          <span>Curved Corridor</span>
+          <span class="availableRoomsCount"></span>
+        </button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="junction">
+          <img src="img/junction.png" />
+          <span>Junction</span>
+          <span class="availableRoomsCount"></span>
+        </button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="cross_junction">
+          <img src="img/crossJunction.png" />
+          <span>Cross Junction</span>
+          <span class="availableRoomsCount"></span>
+        </button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="stairs_down">
+          <img src="img/stairsDown.png" />
+          <span>Stairs (Down)</span>
+          <span class="availableRoomsCount"></span>
+        </button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="stairs_up">
+          <img src="img/stairsUp.png" />
+          <span>Stairs (Up)</span>
+          <span class="availableRoomsCount"></span>
+        </button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="large_room">
+          <img src="img/largeRoom.png" />
+          <span>Large Room</span>
+          <span class="availableRoomsCount"></span>
+        </button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="fleet_command">
+          <img src="img/fleetCommand.png" />
+          <span>Fleet Command</span>
+          <span class="availableRoomsCount"></span>
+        </button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="storage_unit">
+          <img src="img/storageUnit.png" />
+          <span>Storage Unit</span>
+          <span class="availableRoomsCount"></span>
+        </button>
+        <button class="controlButton" onClick="handleRoomButton(this);" data-type="orbital_exocraft_materializer">
+          <img src="img/orbitalExocraftMaterializer.png" />
+          <span>Orbital Exocraft Materializer</span>
+          <span class="availableRoomsCount"></span>
+        </button>
       </div>      
     </div>
   

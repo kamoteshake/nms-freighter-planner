@@ -1,10 +1,8 @@
 let grid = make2dArray(MAX_COLUMN, MAX_ROW);
-let storageUnitCount = parseInt(localStorage.getItem('storageUnitCount') ?? 0)
-let orbitalExocraftMaterializerCount = parseInt(localStorage.getItem('orbitalExocraftMaterializerCount') ?? 0);
 let currentFloor = parseInt(localStorage.getItem('currentFloor') ?? 0);
 let currentType = EMPTY;
 let currentRotation = 0;
-const tilePreview = new Tile('preview', 'preview', currentRotation, currentType);
+const tilePreview = new Tile(0, 0, currentRotation, currentType, false, true);
 
 const handleRoomButton = e => {
   const type = e.getAttribute('data-type');
@@ -48,7 +46,7 @@ const handleDeleteTile = () => {
 
 const handleSaveFloor = () => {
   // get the saved floors
-  const floors = JSON.parse(localStorage.getItem('floors') ?? '{}');
+  const floors = getFloors();
 
   // add or overwrite the current floor
   floors[`floor_${currentFloor}`] = grid;
@@ -84,44 +82,16 @@ const handleTableClick = e => {
     // if the clicked tile is the same, do nothing
     if (clickedTile.type === currentType && clickedTile.rotation === currentRotation) return;
 
+    // if the currentType already hits the room limit, do nothing
+    const tilesCount = getTilesCount();
+    const typeCount = tilesCount?.[currentType] ?? 0;
+    const typeLimit = ROOM_LIMITS.find(room => room.type === currentType);
+    if (currentType !== EMPTY && typeCount === typeLimit?.limit) return;
+
     clickedTile.updateTile(currentType, currentRotation);
     clickedTile.draw();
 
-    // add storage unit count
-    if (currentType === STORAGE_UNIT) {
-      if (storageUnitCount === MAX_STORAGE_UNIT) return;
-
-      storageUnitCount += 1;
-      localStorage.setItem('storageUnitCount', storageUnitCount);
-      
-      updateStorageUnitButton();
-    }
-
-    // subtract storage unit count when removing storage unit room
-    if (clickedTile.type === STORAGE_UNIT && currentType !== STORAGE_UNIT) {
-      storageUnitCount -= 1;
-      localStorage.setItem('storageUnitCount', storageUnitCount);
-
-      updateStorageUnitButton();
-    }
-
-    // add orbital exocraft materializer count
-    if (currentType === ORBITAL_EXOCRAFT_MATERIALIZER) {
-      if (orbitalExocraftMaterializerCount === MAX_ORBITAL_EXOCRAFT_MATERIALIZER) return;
-
-      orbitalExocraftMaterializerCount += 1;
-      localStorage.setItem('orbitalExocraftMaterializerCount', orbitalExocraftMaterializerCount);
-      
-      updateOrbitalExocraftMaterializerButton();
-    }
-
-    // subtract storage unit count when removing storage unit room
-    if (clickedTile.type === ORBITAL_EXOCRAFT_MATERIALIZER && currentType !== ORBITAL_EXOCRAFT_MATERIALIZER) {
-      orbitalExocraftMaterializerCount -= 1;
-      localStorage.setItem('orbitalExocraftMaterializerCount', orbitalExocraftMaterializerCount);
-
-      updateOrbitalExocraftMaterializerButton();
-    }
+    updateRoomButtonsWithLimit();
   }
 };
 
@@ -148,32 +118,28 @@ const updateFloorControl = () => {
       nextFloorButton.disabled = false;
     }
   }
-}
-
-const updateStorageUnitButton = () => {
-  const storageUnitButton = document.getElementById('storageUnitButton');
-
-  if (storageUnitCount === MAX_STORAGE_UNIT && !storageUnitButton.disabled) {
-    storageUnitButton.disabled = true;
-  }
-  if (storageUnitCount !== MAX_STORAGE_UNIT && storageUnitButton.disabled) {
-    storageUnitButton.disabled = false;
-  }
-
-  storageUnitButton.getElementsByTagName('span')[0].innerText = `Storage Unit (${MAX_STORAGE_UNIT - storageUnitCount})`;
 };
 
-const updateOrbitalExocraftMaterializerButton = () => {
-  const orbitalExocraftMaterializerButton = document.getElementById('orbitalExocraftMaterializerButton');
+const updateRoomButtonsWithLimit = () => {
+  const tilesCount = getTilesCount();
 
-  if (orbitalExocraftMaterializerCount === MAX_ORBITAL_EXOCRAFT_MATERIALIZER && !orbitalExocraftMaterializerButton.disabled) {
-    orbitalExocraftMaterializerButton.disabled = true;
-  }
-  if (orbitalExocraftMaterializerCount !== MAX_ORBITAL_EXOCRAFT_MATERIALIZER && orbitalExocraftMaterializerButton.disabled) {
-    orbitalExocraftMaterializerButton.disabled = false;
-  }
+  ROOM_LIMITS.forEach(room => {
+    const buttonElement = document.querySelector(`[data-type="${room.type}"]`);
 
-  orbitalExocraftMaterializerButton.getElementsByTagName('span')[0].innerText = `Orbital Exocraft Materializer (${MAX_ORBITAL_EXOCRAFT_MATERIALIZER - orbitalExocraftMaterializerCount})`;
+    // disable button
+    if (tilesCount[room.type] === room.limit && !buttonElement.disabled) {
+      buttonElement.disabled = true;
+    }
+
+    // enable the button
+    if (tilesCount[room.type] !== room.limit && buttonElement.disabled) {
+      buttonElement.disabled = false;
+    }
+
+    // update the button text to add remaining rooms available
+    let buttonText = buttonElement.getElementsByClassName('availableRoomsCount')[0];
+    buttonText.innerHTML = `&nbsp;(${room.limit - (tilesCount[room.type] ?? 0)})`;
+  });
 };
 
 const updateTilePreview = () => {
@@ -182,8 +148,9 @@ const updateTilePreview = () => {
 };
 
 const populateGrid = () => {
-  // get saved grid
-  let newGrid = JSON.parse(localStorage.getItem('floors') ?? '{}')[`floor_${currentFloor}`]
+  // get saved floors
+  const floors = getFloors();
+  let newGrid = floors[`floor_${currentFloor}`]
     ?.map(tiles => tiles.map(tile => new Tile(tile.x, tile.y, tile.rotation, tile.type, tile.isFixed)));
 
   // if there are no saved floor
@@ -205,9 +172,9 @@ const populateGrid = () => {
 const draw = newGrid => {
   newGrid.forEach(newTiles => {
     newTiles.forEach(newTile => {
-      const oldTile = grid[newTile.x][newTile.y];
+      const currentTile = grid[newTile.x][newTile.y];
       // only update id the tile in the grid is different
-      if (oldTile?.type === newTile.type && oldTile?.rotation === newTile.rotation && oldTile?.isFixed === newTile.isFixed) return;
+      if (currentTile?.type === newTile.type && currentTile?.rotation === newTile.rotation && currentTile?.isFixed === newTile.isFixed) return;
       
       newTile.draw();
       grid[newTile.x][newTile.y] = newTile;
@@ -249,8 +216,8 @@ const initiate = () => {
   tilePreview.draw()
 
   renderContent();
-  updateStorageUnitButton();
-  updateOrbitalExocraftMaterializerButton();
+  countTiles();
+  updateRoomButtonsWithLimit();
 };
 
 document.addEventListener('DOMContentLoaded', initiate);

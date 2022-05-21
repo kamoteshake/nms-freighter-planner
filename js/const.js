@@ -17,3 +17,15 @@ const ORBITAL_EXOCRAFT_MATERIALIZER = 'orbital_exocraft_materializer';
 const STAIRS_DOWN = 'stairs_down';
 const STAIRS_UP = 'stairs_up';
 const STORAGE_UNIT = 'storage_unit';
+
+// room limits
+const ROOM_LIMITS = Object.freeze([
+  Object.freeze({
+    type: ORBITAL_EXOCRAFT_MATERIALIZER,
+    limit: 1
+  }),
+  Object.freeze({
+    type: STORAGE_UNIT,
+    limit: 10
+  })
+]);
