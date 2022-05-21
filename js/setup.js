@@ -46,7 +46,7 @@ const handleDeleteTile = () => {
 
 const handleSaveFloor = () => {
   // get the saved floors
-  const floors = getFloors();
+  const floors = getFloors() ?? {};
 
   // add or overwrite the current floor
   floors[`floor_${currentFloor}`] = grid;
