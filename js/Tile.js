@@ -5,93 +5,55 @@ class Tile {
     this.rotation = rotation ?? 0;
     this.type = type ?? EMPTY;
     this.isFixed = isFixed ?? false;
+
     this.element = document.createElement('div');
+    this.element.classList.add('tile');
+    this.element.setAttribute('data-x', this.x);
+    this.element.setAttribute('data-y', this.y);
   }
 
-  rotateCW() {
-    const newRotation = this.rotation + 90;
-
-    if(newRotation >= 360) {
-      this.rotation = 0;
-    } else {
-      this.rotation = newRotation;
-    }
-
-    this.updateRotation();
+  updateRotation (rotation) {
+    this.rotation = rotation;
   }
 
-  rotateCCW() {
-    const newRotation = this.rotation - 90;
-
-    if(newRotation < 0) {
-      this.rotation = 270;
-    } else {
-      this.rotation = newRotation;
-    }
-
-    this.updateRotation();
+  updateIsFixed(isFixed) {
+    this.isFixed = isFixed;
   }
 
-  updateRotation () {
-    const rotateClass = this.element.className.split(' ').find(c => c.startsWith('--rotate'));
-
-    this.element.classList.remove(rotateClass);
-    this.element.classList.add(`--rotate${this.rotation}`);
-  }
-
-  updateTile(type, rotation, isFixed = false) {
-    if (type === this.type && rotation === this.rotation && isFixed === this.isFixed) return;
-
-    // remove previous info
-    this.element.classList.remove(`--fixed`);
+  updateTile(type, rotation) {
+    // only update the tile if it's not fixed
+    if (this.isFixed) return;
 
     this.type = type;
-    this.isFixed = isFixed;
-
-    // add new info
-    if(this.isFixed) {
-      this.element.classList.add('--fixed');
-    }
-
-    if(rotation !== undefined) {
-      this.rotation = rotation;
-      this.updateRotation();
-    }
-
-    this.reDrawType();
-  }
-
-  reDrawType() {
-    // remove any child
-    if (this.element.firstChild) {
-      this.element.removeChild(this.element.firstChild);
-    }
-
-    if(this.type !== EMPTY) {
-      // create new image
-      const imageElement = document.createElement('img');
-      imageElement.src = typeImages[this.type];
-      this.element.appendChild(imageElement);
-    }
+    this.rotation = rotation;
   }
 
   draw() {
-    this.element.classList.add('tile');
-
-    this.element.setAttribute('data-x', this.x);
-    this.element.setAttribute('data-y', this.y);
-
+    const tileContainer = document.getElementById(`tile_${this.x}_${this.y}`);
+    // remove the previous child
+    tileContainer.innerHTML = '';
+    
     if(this.isFixed) {
       this.element.classList.add('--fixed');
     }
-
-    if(this.type !== EMPTY) {
-      const imageElement = document.createElement('img');
-      imageElement.src = typeImages[this.type];
-      this.element.appendChild(imageElement);
-      this.updateRotation();
+    else {
+      this.element.classList.remove('--fixed');
     }
 
-    return this.element;
+    // remove the old type class
+    const typeClass = this.element.className.split(' ').find(c => c.startsWith('--type-'));
+    this.element.classList.remove(typeClass);
+
+    // add new type class
+    this.element.classList.add(`--type-${this.type}`);
+
+    // remove the old rotate class
+    const rotateClass = this.element.className.split(' ').find(c => c.startsWith('--rotate'));
+    this.element.classList.remove(rotateClass);
+
+    // add new rotate class
+    this.element.classList.add(`--rotate${this.rotation}`);
+
+    tileContainer.appendChild(this.element);
   }
 }

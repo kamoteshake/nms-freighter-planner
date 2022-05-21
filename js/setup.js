@@ -1,4 +1,4 @@
-let grid = [];
+let grid = make2dArray(MAX_COLUMN, MAX_ROW);
 let storageUnitCount = parseInt(localStorage.getItem('storageUnitCount') ?? 0)
 let orbitalExocraftMaterializerCount = parseInt(localStorage.getItem('orbitalExocraftMaterializerCount') ?? 0);
 let currentFloor = parseInt(localStorage.getItem('currentFloor') ?? 0);
@@ -117,47 +117,6 @@ const handleTableClick = e => {
   }
 };
 
-const populateTableGrid = () => {
-  // get saved grid
-  const serializedGrid = JSON.parse(localStorage.getItem(`floor_${currentFloor}`) ?? '[]')
-    .map(row => row.map(tile => new Tile(tile.x, tile.y, tile.rotation, tile.type, tile.isFixed)));
-
-  grid = serializedGrid;
-
-  // create new empty grid if there are no grid
-  if (!grid.length) {
-    for(let row = 0; row < MAX_ROW; row++) {
-      const rowArray = [];
-  
-      // create column
-      for(let column = 0; column < MAX_COLUMN; column++) {
-        const newTile = new Tile(row, column);
-        rowArray.push(newTile);
-  
-        const tableColumn = document.getElementById(`tile_${row}_${column}`);
-        tableColumn.innerHTML = '';
-        tableColumn.appendChild(newTile.draw());
-      }
-  
-      grid.push(rowArray);
-    }
-  } else {
-    grid.forEach((row, rowIndex) => {
-      row.forEach((tile, tileIndex) => {
-        const tableColumn = document.getElementById(`tile_${rowIndex}_${tileIndex}`);
-        tableColumn.innerHTML = '';
-        tableColumn.appendChild(tile.draw());
-      });
-    });
-  }
-
-  // if it's the first floor and there is no saves for the first floor,
-  // render the default freighter floor
-  if (currentFloor === 0 && !localStorage.getItem('floor_0')) {
-    buildDefaultFreighter(grid);
-  }
-};
-
 const updateFloorLabel = () => {
   const floorLabel = document.getElementById('floorLabel');
   floorLabel.innerText = `Floor ${currentFloor + 1}`;
@@ -213,10 +172,44 @@ const updateTilePreview = () => {
   tilePreview.updateTile(currentType, currentRotation);
 };
 
+const populateGrid = () => {
+  // get saved grid
+  let newGrid = JSON.parse(localStorage.getItem('floors') ?? '{}')[`floor_${currentFloor}`]
+    ?.map(row => row.map(tile => new Tile(tile.x, tile.y, tile.rotation, tile.type, tile.isFixed)));
+
+  // if there are no saved floor
+  if (!newGrid?.length) {
+    // if it's the first floor
+    if (currentFloor === 0) {
+      // build the default freighter layout
+      newGrid = buildDefaultFreighter();
+    }
+    else {
+      // create empty grid
+      newGrid = createEmptyGrid();
+    }
+  }
+
+  draw(newGrid);
+};
+
+const draw = newGrid => {
+  newGrid.forEach(newTiles => {
+    newTiles.forEach(newTile => {
+      const oldTile = grid[newTile.x][newTile.y];
+      // only update id the tile in the grid is different
+      if (oldTile?.type === newTile.type && oldTile?.rotation === newTile.rotation && oldTile?.isFixed === newTile.isFixed) return;
+      
+      newTile.draw();
+      grid[newTile.x][newTile.y] = newTile;
+    })
+  })
+};
+
 const renderContent = () => {
   updateFloorButtons();
   updateFloorLabel();
-  populateTableGrid();
+  populateGrid();
 }
 
 const initiate = () => {
@@ -228,14 +221,14 @@ const initiate = () => {
   tableBody.addEventListener('mouseover', handleTableClick);
 
 
-  // create row
+  // create row (y)
   for(let row = 0; row < MAX_ROW; row++) {
     const tableRow = document.createElement('tr');
 
-    // create column
+    // create column (x)
     for(let column = 0; column < MAX_COLUMN; column++) {
       const tableColumn = document.createElement('td');
-      tableColumn.id = `tile_${row}_${column}`;
+      tableColumn.id = `tile_${column}_${row}`;
 
       tableRow.appendChild(tableColumn);
     }
@@ -246,8 +239,8 @@ const initiate = () => {
   gridTable.appendChild(tableBody);
 
   // draw tile preview
-  const tilePreviewElement = document.getElementById('tilePreview');
-  tilePreviewElement.appendChild(tilePreview.draw());
+  // const tilePreviewElement = document.getElementById('tilePreview');
+  // tilePreviewElement.appendChild(tilePreview.draw());
 
   renderContent();
   updateStorageUnitButton();
