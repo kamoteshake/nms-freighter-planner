@@ -1,10 +1,3 @@
-// config
-const maxRow = 21;
-const maxColumn = 21;
-const maxFloor = 14;
-const maxStorageUnit = 10;
-const maxOrbitalExocraftMaterializer = 1;
-
 let grid = [];
 let storageUnitCount = parseInt(localStorage.getItem('storageUnitCount') ?? 0)
 let orbitalExocraftMaterializerCount = parseInt(localStorage.getItem('orbitalExocraftMaterializerCount') ?? 0);
@@ -88,7 +81,7 @@ const handleTableClick = e => {
 
     // add storage unit count
     if (currentType === STORAGE_UNIT) {
-      if (storageUnitCount === maxStorageUnit) return;
+      if (storageUnitCount === MAX_STORAGE_UNIT) return;
 
       storageUnitCount += 1;
       localStorage.setItem('storageUnitCount', storageUnitCount);
@@ -106,7 +99,7 @@ const handleTableClick = e => {
 
     // add orbital exocraft materializer count
     if (currentType === ORBITAL_EXOCRAFT_MATERIALIZER) {
-      if (orbitalExocraftMaterializerCount === maxOrbitalExocraftMaterializer) return;
+      if (orbitalExocraftMaterializerCount === MAX_ORBITAL_EXOCRAFT_MATERIALIZER) return;
 
       orbitalExocraftMaterializerCount += 1;
       localStorage.setItem('orbitalExocraftMaterializerCount', orbitalExocraftMaterializerCount);
@@ -129,17 +122,17 @@ const handleTableClick = e => {
 const populateTableGrid = () => {
   // get saved grid
   const serializedGrid = JSON.parse(localStorage.getItem(`floor_${currentFloor}`) ?? '[]')
-    .map(row => row.map(tile => new Tile(tile.x, tile.y, tile.type, tile.rotation, tile.isFixed)));
+    .map(row => row.map(tile => new Tile(tile.x, tile.y, tile.rotation, tile.type, tile.isFixed)));
 
   grid = serializedGrid;
 
   // create new empty grid if there are no grid
   if (!grid.length) {
-    for(let row = 0; row < maxRow; row++) {
+    for(let row = 0; row < MAX_ROW; row++) {
       const rowArray = [];
   
       // create column
-      for(let column = 0; column < maxColumn; column++) {
+      for(let column = 0; column < MAX_COLUMN; column++) {
         const newTile = new Tile(row, column);
         rowArray.push(newTile);
   
@@ -179,7 +172,7 @@ const updateFloorButtons = () => {
   if (currentFloor === 0) {
     previousFloorButton.disabled = true;
   }
-  else if (currentFloor === maxFloor - 1) {
+  else if (currentFloor === MAX_FLOOR - 1) {
     nextFloorButton.disabled = true;
   }
   else {
@@ -195,27 +188,27 @@ const updateFloorButtons = () => {
 const updateStorageUnitButton = () => {
   const storageUnitButton = document.getElementById('storageUnitButton');
 
-  if (storageUnitCount === maxStorageUnit && !storageUnitButton.disabled) {
+  if (storageUnitCount === MAX_STORAGE_UNIT && !storageUnitButton.disabled) {
     storageUnitButton.disabled = true;
   }
-  if (storageUnitCount !== maxStorageUnit && storageUnitButton.disabled) {
+  if (storageUnitCount !== MAX_STORAGE_UNIT && storageUnitButton.disabled) {
     storageUnitButton.disabled = false;
   }
 
-  storageUnitButton.getElementsByTagName('span')[0].innerText = `Storage Unit (${maxStorageUnit - storageUnitCount})`;
+  storageUnitButton.getElementsByTagName('span')[0].innerText = `Storage Unit (${MAX_STORAGE_UNIT - storageUnitCount})`;
 };
 
 const updateOrbitalExocraftMaterializerButton = () => {
   const orbitalExocraftMaterializerButton = document.getElementById('orbitalExocraftMaterializerButton');
 
-  if (orbitalExocraftMaterializerCount === maxOrbitalExocraftMaterializer && !orbitalExocraftMaterializerButton.disabled) {
+  if (orbitalExocraftMaterializerCount === MAX_ORBITAL_EXOCRAFT_MATERIALIZER && !orbitalExocraftMaterializerButton.disabled) {
     orbitalExocraftMaterializerButton.disabled = true;
   }
-  if (orbitalExocraftMaterializerCount !== maxOrbitalExocraftMaterializer && orbitalExocraftMaterializerButton.disabled) {
+  if (orbitalExocraftMaterializerCount !== MAX_ORBITAL_EXOCRAFT_MATERIALIZER && orbitalExocraftMaterializerButton.disabled) {
     orbitalExocraftMaterializerButton.disabled = false;
   }
 
-  orbitalExocraftMaterializerButton.getElementsByTagName('span')[0].innerText = `Orbital Exocraft Materializer (${maxOrbitalExocraftMaterializer - orbitalExocraftMaterializerCount})`;
+  orbitalExocraftMaterializerButton.getElementsByTagName('span')[0].innerText = `Orbital Exocraft Materializer (${MAX_ORBITAL_EXOCRAFT_MATERIALIZER - orbitalExocraftMaterializerCount})`;
 };
 
 const updateTilePreview = () => {
@@ -238,11 +231,11 @@ const initiate = () => {
 
 
   // create row
-  for(let row = 0; row < maxRow; row++) {
+  for(let row = 0; row < MAX_ROW; row++) {
     const tableRow = document.createElement('tr');
 
     // create column
-    for(let column = 0; column < maxColumn; column++) {
+    for(let column = 0; column < MAX_COLUMN; column++) {
       const tableColumn = document.createElement('td');
       tableColumn.id = `tile_${row}_${column}`;
 

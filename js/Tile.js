@@ -1,5 +1,5 @@
 class Tile {
-  constructor(x, y, type, rotation, isFixed) {
+  constructor(x, y, rotation, type, isFixed) {
     this.x = x ?? 0;
     this.y = y ?? 0;
     this.rotation = rotation ?? 0;
