@@ -71,9 +71,11 @@ button:disabled > img {
   padding: 16px;
   min-width: 300px;
 }
+.controls .controlButton > img {
+  margin-right: 16px;
+}
 
 .controls .controlButton > span {
-  margin-left: 16px;
   font-size: 16px;
   font-weight: 600;
 }
