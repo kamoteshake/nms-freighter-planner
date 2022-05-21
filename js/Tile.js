@@ -1,10 +1,11 @@
 class Tile {
-  constructor(x, y, rotation, type, isFixed) {
+  constructor(x, y, rotation, type, isFixed, isPreview) {
     this.x = x ?? 0;
     this.y = y ?? 0;
     this.rotation = rotation ?? 0;
     this.type = type ?? EMPTY;
     this.isFixed = isFixed ?? false;
+    this.isPreview = isPreview ?? false;
 
     this.element = document.createElement('div');
     this.element.classList.add('tile');
@@ -20,16 +21,47 @@ class Tile {
     this.isFixed = isFixed;
   }
 
-  updateTile(type, rotation) {
+  updateTile(newType, newRotation) {
     // only update the tile if it's not fixed
     if (this.isFixed) return;
 
-    this.type = type;
-    this.rotation = rotation;
+    // if the tile is not a preview, update the tiles count
+    if (!this.isPreview) {
+      // get the current tiles count
+      const tilesCount = getTilesCount();
+  
+      // add to count if the new tile is not empty and not the same as the current tile
+      if (newType !== EMPTY && newType !== this.type) {
+        // check if the new tile exists in the tilesCount
+        if (tilesCount[newType] === undefined) {
+          tilesCount[newType] = 0;
+        }
+
+        tilesCount[newType] += 1;
+      }
+  
+      // subtract from count if the current tile is not empty and not the same as the new tile
+      if (this.type !== EMPTY && newType !== this.type) {
+        // check if the current tile exists in the tilesCount
+        if (tilesCount[this.type] === undefined) {
+          tilesCount[this.type] = 0;
+        }
+
+        tilesCount[this.type] -= 1;
+      }
+  
+      // save new tiles count
+      localStorage.setItem('tilesCount', JSON.stringify(tilesCount));
+    }
+
+    this.type = newType;
+    this.rotation = newRotation;
   }
 
   draw() {
-    const tileContainer = document.getElementById(`tile_${this.x}_${this.y}`);
+    const tileContainer = document.getElementById(
+      this.isPreview ? 'tilePreview' : `tile_${this.x}_${this.y}`
+    );
     // remove the previous child
     tileContainer.innerHTML = '';
     
