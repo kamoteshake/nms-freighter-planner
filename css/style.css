@@ -8,12 +8,11 @@ body {
   background: #272727;
   color: #fff;
   font-family: Arial, Helvetica, sans-serif;
-  padding: 16px;
   user-select: none;
-}
-
-hr {
-  margin: 24px 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
 }
 
 h2 {
@@ -31,13 +30,13 @@ button {
 }
 
 button:hover {
-  box-shadow: 0 5px 9px #000;
-  transform: translateY(-5px);
+  background-color: #666;
+  border: 1px solid #0F0;
 }
 
 button:active {
-  box-shadow: none;
-  transform: translateY(0);
+  border: 1px solid #0B0;
+  background-color:#555;
 }
 
 button:disabled {
@@ -54,13 +53,22 @@ button:disabled > img {
 
 .root {
   display: flex;
+  padding: 16px;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.controlContainer {
+  display: flex;
+  flex-direction: column;
 }
 
 .controls {
   display: flex;
-  flex-wrap: nowrap;
   flex-direction: column;
   overflow: auto;
+  padding: 0 16px;
 }
 
 .controls .controlButton {
@@ -82,27 +90,36 @@ button:disabled > img {
 
 .editControls {
   text-align: center;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ccc;
 }
 
 .gridContainer {
   padding: 24px;
+  overflow: hidden;
   display: flex;
-  align-items: center;
-  flex: 1;
   flex-direction: column;
+  flex: 1;
+  align-items: center;
 }
 
 .floorSelectContainer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  min-width: 300px;
-  margin-bottom: 24px;
 }
 
 .floorSelectContainer .floorSelectButton {
   margin: 8px 16px;
   padding: 8px 16px;
+}
+
+.tableContainer {
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+  padding: 24px;
+  max-width: max-content;
 }
 
 .gridTable {
@@ -181,13 +198,10 @@ button:disabled > img {
 
 .tilePreviewContainer {
   margin: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .tilePreviewContainer .tilePreview {
-  margin-top: 16px;
+  margin: 0 auto;
   width: 50px;
   box-sizing: content-box;
   height: 50px;
