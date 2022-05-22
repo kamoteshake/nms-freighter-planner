@@ -20,7 +20,6 @@
   <div class="root">
     <div class="controlContainer">
       <div class="tilePreviewContainer">
-        <h4>Selected Tile</h4>
         <div id="tilePreview" class="tilePreview"></div>
       </div>
 
@@ -30,8 +29,6 @@
         <button class="editButton" onCLick="handleDeleteTile();" title="Delete Tile"><i class="fa-solid fa-eraser"></i></button>
         <button class="editButton" onCLick="handleSaveFloor();" title="Save Floor"><i class="fa-solid fa-floppy-disk"></i></button>
       </div>
-
-      <hr />
 
       <div class="controls">
         <button class="controlButton" onClick="handleRoomButton(this);" data-type="corridor">
@@ -93,7 +90,9 @@
         <h2 id="floorLabel"></h2>
         <button id="nextFloorButton" class="floorSelectButton" onClick="handleFloorButtonClick('next');"><i class="fa-solid fa-caret-right"></i></button>
       </div>
-      <table id="gridTable" class="gridTable"></table>
+      <div class="tableContainer">
+        <table id="gridTable" class="gridTable"></table>
+      </div>
     </div>
   </div>
 </body>
